@@ -1,8 +1,22 @@
-#include <stdio.h>
+#include <raylib.h>
 
-int main()
+int main(void)
 {
-    printf("Hello, World\n");
+    InitWindow(800, 480, "raylib");
+
+    SetTargetFPS(60);
+
+    while (!WindowShouldClose())
+    {
+        BeginDrawing();
+
+        ClearBackground(RAYWHITE);
+
+        DrawText("Hello, World", GetScreenWidth() / 2, GetScreenHeight() / 2, 50, BLACK);
+        EndDrawing();
+    }
+
+    CloseWindow();
 
     return 0;
 }

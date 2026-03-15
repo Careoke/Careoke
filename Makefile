@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude
-LDFLAGS = 
+LDFLAGS =  -lraylib -lopengl32 -lgdi32 -lwinmm
 
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
