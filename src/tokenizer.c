@@ -25,16 +25,16 @@ int GetLRC(char *lrcFile, Token tokens[])
     return count;
 }
 
-int main()
-{
-    Token tokens[MAX_LINES];
+// int main()
+// {
+//     Token tokens[MAX_LINES];
 
-    int count = GetLRC("out/lyrics.lrc", tokens);
+//     int count = GetLRC("out/lyrics.lrc", tokens);
 
-    for (int i = 0; i < count; i++)
-    {
-        printf("%f -> %s\n", tokens[i].time, tokens[i].lyric);
-    }
+//     for (int i = 0; i < count; i++)
+//     {
+//         printf("%f -> %s\n", tokens[i].time, tokens[i].lyric);
+//     }
 
-    return 0;
-}
+//     return 0;
+// }
