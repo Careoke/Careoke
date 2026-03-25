@@ -10,6 +10,18 @@ enum STATE
     PAUSED
 };
 
+enum OPT
+{
+    PLAY,
+    SETTINGS,
+    CREDIT,
+    NONE
+};
+
+void idk();
+void DrawPlay();
+enum OPT DrawSett();
+enum OPT DrawCre();
 void DrawPlayMenu();
 void DrawPauseMenu();
 

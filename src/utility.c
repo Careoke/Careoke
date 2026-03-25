@@ -12,7 +12,13 @@ Color Mencol = {
 Color Tcol = {
     162, 203, 139, 255};
 
-Color Butcol = {
+Color Butcol1 = {
+    165, 200, 158, 255};
+
+Color Butcol2 = {
+    165, 200, 158, 255};
+
+Color Butcol3 = {
     165, 200, 158, 255};
 
 Color Textcol = {
