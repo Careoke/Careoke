@@ -5,18 +5,107 @@ Rectangle play = {0, 0, 400, 75};
 Rectangle setting = {0, 0, 400, 75};
 Rectangle credit = {0, 0, 400, 75};
 Rectangle close = {0, 0, 50, 50};
+Rectangle DropB1 = {0, 0, 0, 0};
+Rectangle DropB2 = {0, 0, 0, 0};
+Rectangle UrlBox = {0, 0, 0, 0};
 
 enum OPT option = NONE;
+enum STATE mode = START;
 
 bool isWindowFocus = false;
+
+/*
+EXPLANANTION:
+
+1.Why DropB1.width = (GetScreenWidth() - 180) / 2;;
+    so the Drop Box will have a 60px padding from both side of the window bcz of that 2 Box will look like this
+    |----------------------|
+    |60|--x--|60|--x--| 60|      so if we do the math
+    |60|--x--|60|--x--| 60|      60 + x + 60 + x + 60 = GetScreenWidth()
+    |---------------------|         and so the x = (GetScreenWidth() - 180) / 2
+    <--GetScreenWidth()-->
+*/
 
 void idk()
 {
     // i don't know
 }
 
-void DrawPlay()
+enum OPT DrawPlay()
 {
+    DropB1.x = 0 + 60;
+    DropB1.y = ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)) + 100;
+    DropB1.width = (GetScreenWidth() - 180) / 2;
+    DropB1.height = (GetScreenHeight() - DropB1.y) - 50;
+    DropB2.x = 60 + DropB1.width + 60;
+    DropB2.y = DropB1.y;
+    DropB2.width = (GetScreenWidth() - 180) / 2;
+    DropB2.height = (GetScreenHeight() - DropB1.y) - 50;
+    UrlBox.x = ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("Drop your Lrc file Here :D", 20) / 2);
+    UrlBox.y = DropB2.y + (DropB2.height / 2) + 40 + 20,
+    UrlBox.width = MeasureText("Drop your Lrc file Here :D", 20),
+    UrlBox.height = 40;
+    close.x = (GetScreenWidth() - GetScreenWidth() * 0.1f) + 50;
+    close.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.1f) / 2)) + 50;
+
+    DrawRectangle(
+        0,
+        0,
+        GetScreenWidth(),
+        GetScreenHeight(),
+        (Color){151, 168, 122, 255});
+
+    DrawText(
+        "X",
+        (GetScreenWidth() - GetScreenWidth() * 0.1f) + 50,
+        (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.1f) / 2)) + 50,
+        50, BLACK);
+    DrawRectangleRec(close, (Color){0, 0, 0, 0});
+
+    DrawText(
+        "Let's Get Singing~!",
+        ((GetScreenWidth() / 2) - (MeasureText("Let's Get Singing~!", 50) / 2)),
+        ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)),
+        50, Textcol);
+
+    DrawRectangleRec(DropB1, (Color){191, 162, 140, 255 / 2});
+    DrawRectangleLinesEx(
+        DropB1,
+        5,
+        (Color){85, 94, 83, 255});
+    DrawText(
+        "Drop your Music Here :3",
+        (60 + DropB1.width / 2) - (MeasureText("Drop your Music Here :3", 40) / 2),
+        DropB1.y + (DropB1.height / 2),
+        40,
+        (Color){252, 249, 234, 255});
+
+    DrawRectangleRec(DropB2, (Color){191, 162, 140, 255 / 2});
+    DrawRectangleLinesEx(
+        DropB2,
+        5,
+        (Color){85, 94, 83, 255});
+    DrawText(
+        "Drop your Lrc file Here :D",
+        ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("Drop your Lrc file Here :D", 40) / 2),
+        DropB2.y + (DropB2.height / 2),
+        40,
+        (Color){252, 249, 234, 255});
+    DrawText(
+        "If you don't have an LRC file\n Look here (click to get it)",
+        ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("If you don't have an LRC file\n Look here (click to get it)", 20) / 2),
+        DropB2.y + (DropB2.height / 2) + 40 + 20,
+        20,
+        BLUE);
+    DrawRectangleRec(
+        UrlBox,
+        (Color){0, 0, 0, 0});
+    if (hoverButton(UrlBox) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+        OpenURL("https://lrclib.net/");
+
+    if (hoverButton(close) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+        return NONE;
+    return PLAY;
 }
 
 enum OPT DrawSett()
@@ -111,7 +200,7 @@ void DrawPlayMenu()
     }
 
     if (option == PLAY)
-        DrawPlay();
+        option = DrawPlay();
     else if (option == SETTINGS)
         option = DrawSett();
     else if (option == CREDIT)
@@ -124,9 +213,16 @@ int main()
 {
     SetConfigFlags(FLAG_WINDOW_UNDECORATED);
     InitWindow(GetScreenWidth(), GetScreenHeight(), "test");
+    InitAudioDevice();
+    Music bg = LoadMusicStream("utils/audio/bg-from-yt.mp3");
 
+    PlayMusicStream(bg);
     while (!WindowShouldClose())
     {
+        if (mode == START)
+            UpdateMusicStream(bg);
+        else
+            UnloadMusicStream(bg);
         BeginDrawing();
         ClearBackground(Mencol);
 
@@ -134,6 +230,6 @@ int main()
 
         EndDrawing();
     }
-
+    UnloadMusicStream(bg);
     CloseWindow();
 }

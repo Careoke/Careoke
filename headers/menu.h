@@ -2,6 +2,7 @@
 #define MENU_H
 
 #include <raylib.h>
+#include <stdlib.h>
 
 enum STATE
 {
@@ -19,7 +20,7 @@ enum OPT
 };
 
 void idk();
-void DrawPlay();
+enum OPT DrawPlay();
 enum OPT DrawSett();
 enum OPT DrawCre();
 void DrawPlayMenu();
