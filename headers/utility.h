@@ -12,6 +12,7 @@ extern Color Pcol;
 extern Color Butcol1;
 extern Color Butcol2;
 extern Color Butcol3;
+extern Color Butcol4;
 extern Color Textcol;
 
 bool hoverButton(Rectangle rec);

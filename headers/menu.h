@@ -23,7 +23,7 @@ void idk();
 enum OPT DrawPlay();
 enum OPT DrawSett();
 enum OPT DrawCre();
-void DrawPlayMenu();
+int DrawPlayMenu();
 void DrawPauseMenu();
 
 #endif // !MENU_H

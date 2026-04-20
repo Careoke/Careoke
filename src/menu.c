@@ -4,6 +4,7 @@
 Rectangle play = {0, 0, 400, 75};
 Rectangle setting = {0, 0, 400, 75};
 Rectangle credit = {0, 0, 400, 75};
+Rectangle Exit = {0, 0, 400, 75};
 Rectangle close = {0, 0, 50, 50};
 Rectangle DropB1 = {0, 0, 0, 0};
 Rectangle DropB2 = {0, 0, 0, 0};
@@ -146,7 +147,7 @@ enum OPT DrawCre()
     return CREDIT;
 }
 
-void DrawPlayMenu()
+int DrawPlayMenu()
 {
     if (option != NONE)
         isWindowFocus = true;
@@ -166,10 +167,30 @@ void DrawPlayMenu()
     credit.x = play.x;
     credit.y = (GetScreenHeight() / 2) + (40 + 75 + 106);
     DrawRectangleRec(credit, Butcol3);
+    Exit.x = play.x;
+    Exit.y = (GetScreenHeight() / 2) + (40 + 75 + 106 * 2);
+    DrawRectangleRec(Exit, Butcol4);
 
-    DrawText("PLAY", play.x + ((play.width / 2) - MeasureText("PLAY", 50) / 2), play.y + 15, 50, Textcol);
-    DrawText("SETTINGS", setting.x + ((setting.width / 2) - MeasureText("SETTINGS", 50) / 2), setting.y + 15, 50, Textcol);
-    DrawText("CREDITS", credit.x + ((credit.width / 2) - MeasureText("CREDITS", 50) / 2), credit.y + 15, 50, Textcol);
+    DrawText(
+        "PLAY",
+        play.x + ((play.width / 2) - MeasureText("PLAY", 50) / 2),
+        play.y + 15,
+        50, Textcol);
+    DrawText(
+        "SETTINGS",
+        setting.x + ((setting.width / 2) - MeasureText("SETTINGS", 50) / 2),
+        setting.y + 15,
+        50, Textcol);
+    DrawText(
+        "CREDITS",
+        credit.x + ((credit.width / 2) - MeasureText("CREDITS", 50) / 2),
+        credit.y + 15,
+        50, Textcol);
+    DrawText(
+        "EXIT",
+        Exit.x + ((Exit.width / 2) - MeasureText("EXIT", 50) / 2),
+        Exit.y + 15,
+        50, Textcol);
 
     if (!isWindowFocus)
     {
@@ -187,6 +208,11 @@ void DrawPlayMenu()
             Butcol3.a = 150;
         else
             Butcol3.a = 255;
+
+        if (hoverButton(Exit))
+            Butcol4.a = 150;
+        else
+            Butcol4.a = 255;
     }
 
     if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
@@ -197,6 +223,8 @@ void DrawPlayMenu()
             option = SETTINGS;
         if (hoverButton(credit))
             option = CREDIT;
+        if (hoverButton(Exit))
+            return 1;
     }
 
     if (option == PLAY)
@@ -207,6 +235,8 @@ void DrawPlayMenu()
         option = DrawCre();
     else
         idk();
+
+    return 0;
 }
 
 int main()
@@ -228,8 +258,18 @@ int main()
 
         DrawPlayMenu();
 
+        if (DrawPlayMenu())
+        {
+            EndDrawing();
+            UnloadMusicStream(bg);
+            CloseWindow();
+            return 0;
+        }
+
         EndDrawing();
     }
     UnloadMusicStream(bg);
     CloseWindow();
+
+    return 0;
 }
