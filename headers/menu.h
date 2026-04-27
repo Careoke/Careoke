@@ -19,6 +19,9 @@ enum OPT
     NONE
 };
 
+extern enum OPT option;
+extern enum STATE mode;
+
 void idk();
 enum OPT DrawPlay();
 enum OPT DrawSett();
