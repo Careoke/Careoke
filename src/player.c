@@ -1,27 +1,51 @@
-#include <raylib.h>
-#include "../headers/tokenizer.h"
+#include "../headers/player.h"
+
+bool seal = 1;
 
 int main(void)
 {
     InitWindow(1920, 1080, "raylib");
-    InitAudioDevice();
-
-    Token tokens[MAX_LINES];
-    int count = GetLRC("out/lyrics.lrc", tokens);
-    int ti = 0;
-
-    SetTargetFPS(60);
-
-    Music mus = LoadMusicStream("out/music.mp3");
-    float curTime = 0.0f;
-    PlayMusicStream(mus);
+    bool check = false;
 
     while (!WindowShouldClose())
     {
-        UpdateMusicStream(mus);
-        curTime = GetMusicTimePlayed(mus);
         BeginDrawing();
         ClearBackground(RAYWHITE);
+        check = Player("out/music.mp3", "out/lyrics.lrc");
+        if (check)
+            break;
+
+        EndDrawing();
+    }
+
+    CloseWindow();
+    return 0;
+}
+
+bool Player(char *musicDir, char *lrcDir)
+{
+    static Music mus;
+    static float curTime = 0.0f;
+    static int ti = 0;
+    static int count = 0;
+    static Token tokens[MAX_LINES];
+    static bool isLoaded = 0;
+
+    if (seal == 1 && !isLoaded)
+    {
+        InitAudioDevice();
+        count = GetLRC(lrcDir, tokens);
+        mus = LoadMusicStream(musicDir);
+
+        PlayMusicStream(mus);
+        seal = 0;
+        isLoaded = 1;
+    }
+
+    if (isLoaded)
+    {
+        UpdateMusicStream(mus);
+        curTime = GetMusicTimePlayed(mus);
 
         if (ti < count - 1 && curTime >= tokens[ti + 1].time)
             ti++;
@@ -51,11 +75,14 @@ int main(void)
                 (GetScreenWidth() / 2) - ((MeasureText(tokens[ti + 1].lyric, 25)) / 2),
                 (GetScreenHeight() / 2) + 100,
                 25, BLACK);
-
-        EndDrawing();
     }
-    CloseAudioDevice();
-    CloseWindow();
 
-    return 0;
+    if (GetMusicTimePlayed(mus) >= GetMusicTimeLength(mus) - 0.1f)
+    {
+        isLoaded = false;
+        ti = 0;
+        CloseAudioDevice();
+        return true;
+    }
+    return false;
 }
