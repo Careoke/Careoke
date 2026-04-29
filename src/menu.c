@@ -54,23 +54,30 @@ enum OPT DrawPlay()
 
                 if (IsFileExtension(currentPath, ".mp3") || IsFileExtension(currentPath, ".lrc"))
                 {
-                    int pathLen = strlen(currentPath) + 1;
-                    if (filePaths[filePathCounter] != NULL)
-                        RL_FREE(filePaths[filePathCounter]);
-                    filePaths[filePathCounter] = (char *)RL_CALLOC(pathLen, sizeof(char));
-                    strcpy(filePaths[filePathCounter], currentPath);
-                    if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
-                    {
-                        isLrc = 1;
-                        inMp3 = 1;
-                        inLrc = 0;
-                    }
+                    if (IsFileExtension(currentPath, ".mp3") && isMp3)
+                        errTime = 3000.0f;
+                    else if (IsFileExtension(currentPath, ".lrc") && isLrc)
+                        errTime = 3000.0f;
                     else
                     {
-                        isMp3 = 1;
+                        int pathLen = strlen(currentPath) + 1;
+                        if (filePaths[filePathCounter] != NULL)
+                            RL_FREE(filePaths[filePathCounter]);
+                        filePaths[filePathCounter] = (char *)RL_CALLOC(pathLen, sizeof(char));
+                        strcpy(filePaths[filePathCounter], currentPath);
+                        if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                        {
+                            isLrc = 1;
+                            inMp3 = 1;
+                            inLrc = 0;
+                        }
+                        else
+                        {
+                            isMp3 = 1;
+                        }
+                        filePathCounter++;
+                        TraceLog(LOG_INFO, "%s", currentPath);
                     }
-                    filePathCounter++;
-                    TraceLog(LOG_INFO, "%s", currentPath);
                 }
                 else
                 {
@@ -81,7 +88,7 @@ enum OPT DrawPlay()
         UnloadDroppedFiles(droppedFiles);
     }
 
-    if (filePathCounter == 2)
+    if (isLrc && isMp3 && filePathCounter == 2)
         mode = PLAYING;
 
     DropB1.x = 0 + 60;
