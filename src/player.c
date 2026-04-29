@@ -13,7 +13,8 @@ bool Player(char *musicDir, char *lrcDir)
 
     if (seal == 1 && !isLoaded)
     {
-        InitAudioDevice();
+        if (!IsAudioDeviceReady())
+            InitAudioDevice();
         count = GetLRC(lrcDir, tokens);
         mus = LoadMusicStream(musicDir);
 
