@@ -14,6 +14,9 @@ enum OPT option = NONE;
 enum STATE mode = START;
 
 bool isWindowFocus = false;
+int errTime;
+char *filePaths[MAX_FILEPATH_RECORDED] = {0};
+int filePathCounter = 0;
 
 /*
 EXPLANANTION:
@@ -34,6 +37,38 @@ void idk()
 
 enum OPT DrawPlay()
 {
+    if (IsFileDropped())
+    {
+        FilePathList droppedFiles = LoadDroppedFiles();
+
+        for (int i = 0; i < (int)droppedFiles.count; i++)
+        {
+            if (filePathCounter < MAX_FILEPATH_RECORDED)
+            {
+                const char *currentPath = droppedFiles.paths[i];
+
+                if (IsFileExtension(currentPath, ".mp3") || IsFileExtension(currentPath, ".lrc"))
+                {
+                    int pathLen = strlen(currentPath) + 1;
+                    if (filePaths[filePathCounter] != NULL)
+                        RL_FREE(filePaths[filePathCounter]);
+                    filePaths[filePathCounter] = (char *)RL_CALLOC(pathLen, sizeof(char));
+                    strcpy(filePaths[filePathCounter], currentPath);
+                    filePathCounter++;
+                    TraceLog(LOG_INFO, "%s", currentPath);
+                }
+                else
+                {
+                    errTime = 3000.0f;
+                }
+            }
+        }
+        UnloadDroppedFiles(droppedFiles);
+    }
+
+    if (filePathCounter == 2)
+        mode = PLAYING;
+
     DropB1.x = 0 + 60;
     DropB1.y = ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)) + 100;
     DropB1.width = (GetScreenWidth() - 180) / 2;
@@ -101,6 +136,13 @@ enum OPT DrawPlay()
     DrawRectangleRec(
         UrlBox,
         (Color){0, 0, 0, 0});
+
+    if (errTime > 0)
+    {
+        ShowMessage("Please Insert a Valid file/ file format", 40, CENTER, RED, 20);
+        errTime -= GetFrameTime();
+    }
+
     if (hoverButton(UrlBox) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
         OpenURL("https://lrclib.net/");
 
@@ -149,6 +191,9 @@ enum OPT DrawCre()
 
 int DrawPlayMenu()
 {
+    if (mode == PLAYING)
+        return 2;
+
     if (option != NONE)
         isWindowFocus = true;
     else

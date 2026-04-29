@@ -34,3 +34,58 @@ bool hoverButton(Rectangle rec)
 {
     return CheckCollisionPointRec(GetMousePosition(), rec);
 }
+
+void ShowMessage(const char *msg, int padding, Postions pos, Color col, int fontSize)
+{
+    int screenW = GetScreenWidth();
+    int screenH = GetScreenHeight();
+    int textWidth = MeasureText(msg, fontSize);
+    int boxW = textWidth + (padding * 2);
+    int boxH = fontSize + (padding * 2);
+    Vector2 boxPos = {0};
+
+    switch (pos)
+    {
+    case TOP_LEFT:
+        boxPos = (Vector2){20, 20};
+        break;
+    case TOP_MIDDLE:
+        boxPos = (Vector2){(screenW - boxW) / 2.0f, 20};
+        break;
+    case TOP_RIGHT:
+        boxPos = (Vector2){screenW - boxW - 20.0f, 20};
+        break;
+    case CENTER:
+        boxPos = (Vector2){(screenW - boxW) / 2.0f, (screenH - boxH) / 2.0f};
+        break;
+    case BOTTOM_MIDDLE:
+        boxPos = (Vector2){(screenW - boxW) / 2.0f, screenH - boxH - 20.0f};
+        break;
+    case BOTTOM_LEFT:
+        boxPos = (Vector2){20, screenH - boxH - 20.0f};
+        break;
+    case BOTTOM_RIGHT:
+        boxPos = (Vector2){screenW - boxW - 20.0f, screenH - boxH - 20.0f};
+        break;
+    }
+
+    DrawRectangleRec(
+        (Rectangle){
+            boxPos.x,
+            boxPos.y,
+            (float)boxW,
+            (float)boxH},
+        Fade(col, 0.8f));
+    DrawRectangleLinesEx(
+        (Rectangle){
+            boxPos.x,
+            boxPos.y,
+            (float)boxW,
+            (float)boxH},
+        2, WHITE);
+    DrawText(
+        msg,
+        (int)(boxPos.x + padding),
+        (int)(boxPos.y + padding),
+        fontSize, WHITE);
+}

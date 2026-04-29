@@ -2,7 +2,19 @@
 #define UTILITY
 
 #include <stdbool.h>
+#include <stdio.h>
 #include <raylib.h>
+
+typedef enum
+{
+    TOP_LEFT,
+    TOP_MIDDLE,
+    TOP_RIGHT,
+    CENTER,
+    BOTTOM_MIDDLE,
+    BOTTOM_LEFT,
+    BOTTOM_RIGHT
+} Postions;
 
 extern Color Ccol;
 extern Color Bocol;
@@ -16,5 +28,6 @@ extern Color Butcol4;
 extern Color Textcol;
 
 bool hoverButton(Rectangle rec);
+void ShowMessage(const char *msg, int padding, Postions pos, Color col, int fontSize);
 
 #endif // !UTILITY

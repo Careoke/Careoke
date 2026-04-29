@@ -1,8 +1,11 @@
 #ifndef MENU_H
 #define MENU_H
 
+#define MAX_FILEPATH_RECORDED 2
+
 #include <raylib.h>
 #include <stdlib.h>
+#include <string.h>
 
 enum STATE
 {
@@ -21,6 +24,9 @@ enum OPT
 
 extern enum OPT option;
 extern enum STATE mode;
+
+extern char *filePaths[MAX_FILEPATH_RECORDED];
+extern int filePathCounter;
 
 void idk();
 enum OPT DrawPlay();
