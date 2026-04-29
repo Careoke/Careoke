@@ -2,26 +2,6 @@
 
 bool seal = 1;
 
-int main(void)
-{
-    InitWindow(1920, 1080, "raylib");
-    bool check = false;
-
-    while (!WindowShouldClose())
-    {
-        BeginDrawing();
-        ClearBackground(RAYWHITE);
-        check = Player("out/music.mp3", "out/lyrics.lrc");
-        if (check)
-            break;
-
-        EndDrawing();
-    }
-
-    CloseWindow();
-    return 0;
-}
-
 bool Player(char *musicDir, char *lrcDir)
 {
     static Music mus;
