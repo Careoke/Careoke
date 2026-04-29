@@ -18,6 +18,11 @@ int errTime;
 char *filePaths[MAX_FILEPATH_RECORDED] = {0};
 int filePathCounter = 0;
 
+bool isMp3 = 0;
+bool isLrc = 0;
+int inMp3 = 0;
+int inLrc = 1;
+
 /*
 EXPLANANTION:
 
@@ -54,6 +59,16 @@ enum OPT DrawPlay()
                         RL_FREE(filePaths[filePathCounter]);
                     filePaths[filePathCounter] = (char *)RL_CALLOC(pathLen, sizeof(char));
                     strcpy(filePaths[filePathCounter], currentPath);
+                    if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                    {
+                        isLrc = 1;
+                        inMp3 = 1;
+                        inLrc = 0;
+                    }
+                    else
+                    {
+                        isMp3 = 1;
+                    }
                     filePathCounter++;
                     TraceLog(LOG_INFO, "%s", currentPath);
                 }
@@ -105,46 +120,77 @@ enum OPT DrawPlay()
         50, Textcol);
 
     DrawRectangleRec(DropB1, (Color){191, 162, 140, 255 / 2});
-    DrawRectangleLinesEx(
-        DropB1,
-        5,
-        (Color){85, 94, 83, 255});
-    DrawText(
-        "Drop your Music Here :3",
-        (60 + DropB1.width / 2) - (MeasureText("Drop your Music Here :3", 40) / 2),
-        DropB1.y + (DropB1.height / 2),
-        40,
-        (Color){252, 249, 234, 255});
+    if (!isMp3)
+        DrawRectangleLinesEx(
+            DropB1,
+            5,
+            (Color){85, 94, 83, 255});
+    else
+        DrawRectangleLinesEx(
+            DropB1,
+            7,
+            (Color){0, 128, 0, 255});
+    if (!isMp3)
+        DrawText(
+            "Drop your Music Here :3",
+            (60 + DropB1.width / 2) - (MeasureText("Drop your Music Here :3", 40) / 2),
+            DropB1.y + (DropB1.height / 2),
+            40,
+            (Color){252, 249, 234, 255});
+    else
+        DrawText(
+            TextFormat("%s", GetFileName(filePaths[inMp3])),
+            (60 + DropB1.width / 2) - (MeasureText(TextFormat("%s", GetFileName(filePaths[inMp3])), 40) / 2),
+            DropB1.y + (DropB1.height / 2),
+            40,
+            (Color){252, 249, 234, 255});
 
     DrawRectangleRec(DropB2, (Color){191, 162, 140, 255 / 2});
-    DrawRectangleLinesEx(
-        DropB2,
-        5,
-        (Color){85, 94, 83, 255});
-    DrawText(
-        "Drop your Lrc file Here :D",
-        ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("Drop your Lrc file Here :D", 40) / 2),
-        DropB2.y + (DropB2.height / 2),
-        40,
-        (Color){252, 249, 234, 255});
-    DrawText(
-        "If you don't have an LRC file\n Look here (click to get it)",
-        ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("If you don't have an LRC file\n Look here (click to get it)", 20) / 2),
-        DropB2.y + (DropB2.height / 2) + 40 + 20,
-        20,
-        BLUE);
-    DrawRectangleRec(
-        UrlBox,
-        (Color){0, 0, 0, 0});
+    if (!isLrc)
+        DrawRectangleLinesEx(
+            DropB2,
+            5,
+            (Color){85, 94, 83, 255});
+    else
+        DrawRectangleLinesEx(
+            DropB2,
+            7,
+            (Color){0, 128, 0, 255});
+    if (!isLrc)
+    {
+        DrawText(
+            "Drop your Lrc file Here :D",
+            ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("Drop your Lrc file Here :D", 40) / 2),
+            DropB2.y + (DropB2.height / 2),
+            40,
+            (Color){252, 249, 234, 255});
+        DrawText(
+            "If you don't have an LRC file\n Look here (click to get it)",
+            ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("If you don't have an LRC file\n Look here (click to get it)", 20) / 2),
+            DropB2.y + (DropB2.height / 2) + 40 + 20,
+            20,
+            BLUE);
+        DrawRectangleRec(
+            UrlBox,
+            (Color){0, 0, 0, 0});
+        if (hoverButton(UrlBox) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+            OpenURL("https://lrclib.net/");
+    }
+    else
+    {
+        DrawText(
+            TextFormat("%s", GetFileName(filePaths[inLrc])),
+            ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText(TextFormat("%s", GetFileName(filePaths[inLrc])), 40) / 2),
+            DropB2.y + (DropB2.height / 2),
+            40,
+            (Color){252, 249, 234, 255});
+    }
 
     if (errTime > 0)
     {
         ShowMessage("Please Insert a Valid file/ file format", 40, CENTER, RED, 20);
         errTime -= GetFrameTime();
     }
-
-    if (hoverButton(UrlBox) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
-        OpenURL("https://lrclib.net/");
 
     if (hoverButton(close) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
         return NONE;
