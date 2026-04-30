@@ -1,6 +1,6 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude
-LDFLAGS =  -lraylib -lopengl32 -lgdi32 -lwinmm
+LDFLAGS =  -lraylib -lopengl32 -lgdi32 -lwinmm -lcomdlg32 -lole32
 
 MENU_SRC = src/menu.c src/utility.c
 SRC = $(wildcard src/*.c)
