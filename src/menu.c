@@ -252,7 +252,7 @@ enum OPT DrawPlay()
                     1);
                 if (tmpFilePaths != NULL)
                 {
-                    if (memchr(tmpFilePaths, '|', 1))
+                    if (memchr(tmpFilePaths, '|', strlen(tmpFilePaths)))
                     {
                         char *currentPath1 = strtok(tmpFilePaths, "|");
                         char *currentPath2 = strtok(NULL, "|");
@@ -294,8 +294,11 @@ enum OPT DrawPlay()
                             }
                             filePathCounter++;
                         }
-                        RL_FREE(currentPath1);
-                        RL_FREE(currentPath2);
+                        if (filePathCounter < 2) // don't free before we even allocate and do other stuff
+                        {
+                            RL_FREE(currentPath1);
+                            RL_FREE(currentPath2);
+                        }
                     }
                     else
                     {
