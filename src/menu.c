@@ -1,5 +1,6 @@
 #include "../headers/menu.h"
 #include "../headers/utility.h"
+#include "../headers/tinyfiledialogs.h"
 
 Rectangle play = {0, 0, 400, 75};
 Rectangle setting = {0, 0, 400, 75};
@@ -9,6 +10,7 @@ Rectangle close = {0, 0, 50, 50};
 Rectangle DropB1 = {0, 0, 0, 0};
 Rectangle DropB2 = {0, 0, 0, 0};
 Rectangle UrlBox = {0, 0, 0, 0};
+Rectangle BoundBox = {0, 0, 0, 0};
 
 enum OPT option = NONE;
 enum STATE mode = START;
@@ -17,6 +19,8 @@ bool isWindowFocus = false;
 int errTime;
 char *filePaths[MAX_FILEPATH_RECORDED] = {0};
 int filePathCounter = 0;
+const char *filters[] = {"*.mp3", "*.lrc"};
+bool enter = false;
 
 bool isMp3 = 0;
 bool isLrc = 0;
@@ -91,6 +95,8 @@ enum OPT DrawPlay()
     if (isLrc && isMp3 && filePathCounter == 2)
         mode = PLAYING;
 
+    BoundBox.width = GetScreenWidth();
+    BoundBox.height = GetScreenHeight();
     DropB1.x = 0 + 60;
     DropB1.y = ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)) + 100;
     DropB1.width = (GetScreenWidth() - 180) / 2;
@@ -193,12 +199,136 @@ enum OPT DrawPlay()
             (Color){252, 249, 234, 255});
     }
 
+    if (enter == true)
+    {
+        DrawRectangleRec(BoundBox, (Color){0, 0, 0, 0});
+        if (filePathCounter < 2 && hoverButton(BoundBox) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+        {
+            char *tmpFilePaths = NULL;
+
+            if (filePathCounter == 1)
+            {
+                tmpFilePaths = tinyfd_openFileDialog(
+                    "Careoke - Pick your ammo",
+                    "",
+                    2,
+                    filters,
+                    ".mp3, .lrc",
+                    0);
+                if (tmpFilePaths != NULL)
+                {
+                    if (!IsFileExtension(tmpFilePaths, GetFileExtension(filePaths[filePathCounter - 1])))
+                    {
+                        int pathLen = strlen(tmpFilePaths) + 1;
+                        filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
+                        strcpy(filePaths[filePathCounter], tmpFilePaths);
+                        if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                        {
+                            isLrc = 1;
+                            inMp3 = 1;
+                            inLrc = 0;
+                        }
+                        else
+                        {
+                            isMp3 = 1;
+                        }
+                        filePathCounter++;
+                    }
+                    else
+                    {
+                        errTime = 3000.0f;
+                    }
+                }
+            }
+
+            if (filePathCounter == 0)
+            {
+                tmpFilePaths = tinyfd_openFileDialog(
+                    "Careoke - Pick your ammo",
+                    "",
+                    2,
+                    filters,
+                    ".mp3, .lrc",
+                    1);
+                if (tmpFilePaths != NULL)
+                {
+                    if (memchr(tmpFilePaths, '|', 1))
+                    {
+                        char *currentPath1 = strtok(tmpFilePaths, "|");
+                        char *currentPath2 = strtok(NULL, "|");
+
+                        if (!(IsFileExtension(currentPath1, ".mp3") || IsFileExtension(currentPath1, ".lrc")) || (!IsFileExtension(currentPath2, ".mp3") || IsFileExtension(currentPath2, ".lrc")))
+                            errTime = 3000.0f;
+
+                        if (IsFileExtension(currentPath1, ".mp3") || IsFileExtension(currentPath1, ".lrc"))
+                        {
+                            int pathLen = strlen(currentPath1) + 1;
+                            filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
+                            strcpy(filePaths[filePathCounter], currentPath1);
+                            if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                            {
+                                isLrc = 1;
+                                inMp3 = 1;
+                                inLrc = 0;
+                            }
+                            else
+                            {
+                                isMp3 = 1;
+                            }
+                            filePathCounter++;
+                        }
+                        if (IsFileExtension(currentPath2, ".mp3") || IsFileExtension(currentPath2, ".lrc"))
+                        {
+                            int pathLen = strlen(currentPath2) + 1;
+                            filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
+                            strcpy(filePaths[filePathCounter], currentPath2);
+                            if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                            {
+                                isLrc = 1;
+                                inMp3 = 1;
+                                inLrc = 0;
+                            }
+                            else
+                            {
+                                isMp3 = 1;
+                            }
+                            filePathCounter++;
+                        }
+                        RL_FREE(currentPath1);
+                        RL_FREE(currentPath2);
+                    }
+                    else
+                    {
+                        if (!(IsFileExtension(tmpFilePaths, ".mp3") || IsFileExtension(tmpFilePaths, ".lrc")))
+                            errTime = 3000.0f;
+
+                        int pathLen = strlen(tmpFilePaths) + 1;
+                        filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
+                        strcpy(filePaths[filePathCounter], tmpFilePaths);
+                        if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                        {
+                            isLrc = 1;
+                            inMp3 = 1;
+                            inLrc = 0;
+                        }
+                        else
+                        {
+                            isMp3 = 1;
+                        }
+                        filePathCounter++;
+                    }
+                }
+            }
+        }
+    }
+
     if (errTime > 0)
     {
         ShowMessage("Please Insert a Valid file/ file format", 40, CENTER, RED, 20);
         errTime -= GetFrameTime();
     }
 
+    enter = true;
     if (hoverButton(close) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
         return NONE;
     return PLAY;
