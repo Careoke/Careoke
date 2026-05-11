@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <raylib.h>
 
+/**
+ * @brief a enum that holds postions to show a dialouge
+ */
 typedef enum
 {
     TOP_LEFT,
@@ -27,7 +30,30 @@ extern Color Butcol3;
 extern Color Butcol4;
 extern Color Textcol;
 
+/**
+ * @brief Take a Rectangle rec and checks if there was a collision between the rectangle and mouse
+ *
+ * @warning only rectangle shape
+ *
+ * @return Return true if there is a collision
+ */
 bool hoverButton(Rectangle rec);
+
+/**
+ * @brief Shows a Dialouge with a message
+ *
+ * @var msg The message
+ *
+ * @var padding around the text
+ *
+ * @var pos Postions of subwindow
+ *
+ * @var col Color of the window
+ *
+ * @var fontSize Size of the font
+ *
+ * @warning fixed Postions
+ */
 void ShowMessage(const char *msg, int padding, Postions pos, Color col, int fontSize);
 
 #endif // !UTILITY
