@@ -89,3 +89,43 @@ void ShowMessage(const char *msg, int padding, Postions pos, Color col, int font
         (int)(boxPos.y + padding),
         fontSize, WHITE);
 }
+
+float MeasureTextHeight(char *text, int fontSize)
+{
+    return MeasureTextEx(GetFontDefault(), text, fontSize, 2.0).y;
+}
+
+bool DrawCard(Card card)
+{
+    DrawRectangleRec(
+        card.rec,
+        card.CardColor);
+
+    // Image place holder
+    // DrawRectangle(
+    //     card.rec.x + 15,
+    //     card.rec.y + 15,
+    //     30,
+    //     MeasureTextHeight(card.Head, 30),
+    //     BLACK);
+    DrawTexture(
+        card.img,
+        card.rec.x + 15,
+        card.rec.y + 15,
+        WHITE);
+
+    DrawText(
+        card.Head,
+        card.rec.x + 15 + 30 + 10, // rec.x + padding1 + font size (which also the width of rec box holder) + padding2
+        card.rec.y + 15,           // rec.x + padding1
+        30,
+        card.TextColor);
+    DrawText(
+        card.body,
+        card.rec.x + 15,                                         // rec.x + padding1
+        card.rec.y + MeasureTextHeight(card.Head, 30) + 15 + 10, // rec.x + height of the head text +  padding1 + padding2
+        15,
+        card.TextColor);
+
+    return hoverButton(card.rec);
+}

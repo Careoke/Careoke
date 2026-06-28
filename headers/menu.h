@@ -55,6 +55,14 @@ extern int filePathCounter;
  */
 void idk();
 /**
+ * @brief initialize the Images needed Also turns Those images into Textures
+ */
+void InitImages();
+/**
+ *  @brief Unload the Texture Images that were initialize with InitImages()
+ */
+void UnloadTimages();
+/**
  * @brief Draws the play window
  *
  * @saying tho it isn't play it's the selection windows

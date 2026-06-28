@@ -19,6 +19,19 @@ typedef enum
     BOTTOM_RIGHT
 } Postions;
 
+/**
+ * @brief a struct that hold the parameters to draw a card
+ */
+typedef struct Card
+{
+    Rectangle rec;
+    Texture2D img;
+    char *Head;
+    char *body;
+    Color CardColor;
+    Color TextColor;
+} Card;
+
 extern Color Ccol;
 extern Color Bocol;
 extern Color Mencol;
@@ -55,5 +68,25 @@ bool hoverButton(Rectangle rec);
  * @warning fixed Postions
  */
 void ShowMessage(const char *msg, int padding, Postions pos, Color col, int fontSize);
+
+/**
+ * @brief Shows the height(y) value of a Text with his font size
+ *
+ * @var any text (can have \n)
+ *
+ * @var font size in int
+ *
+ * @return Returns the Height(y) of a Text
+ */
+float MeasureTextHeight(char *text, int fontSize);
+
+/**
+ * @brief Draw a using `Card` struct
+ *
+ * @var Takes a `Card` value
+ *
+ * @return Returns True if the mouse hoverd on the card
+ */
+bool DrawCard(Card card);
 
 #endif // !UTILITY

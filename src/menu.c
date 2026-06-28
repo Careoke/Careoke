@@ -11,6 +11,17 @@ Rectangle DropB1 = {0, 0, 0, 0};
 Rectangle DropB2 = {0, 0, 0, 0};
 Rectangle UrlBox = {0, 0, 0, 0};
 Rectangle BoundBox = {0, 0, 0, 0};
+Rectangle Subwindow = {0};
+
+Card raylib = {0};
+Card libtinyfiledialogs = {0};
+Card Colorhunt = {0};
+Card j1gggs = {0};
+
+Texture2D tRay = {0};
+Texture2D tLibtinyfiledialogs = {0};
+Texture2D tColorhunt = {0};
+Texture2D tJ1gggs = {0};
 
 enum OPT option = NONE;
 enum STATE mode = START;
@@ -26,6 +37,7 @@ bool isMp3 = 0;
 bool isLrc = 0;
 int inMp3 = 0;
 int inLrc = 1;
+int Image_seal = 0;
 
 /*
 EXPLANANTION:
@@ -42,6 +54,53 @@ EXPLANANTION:
 void idk()
 {
     // i don't know
+}
+
+void InitImages()
+{
+    Image tmp_tRay = LoadImage("utils/images/raylib.png");
+    Image tmp_tLibtinyfiledialogs = LoadImage("utils/images/libtinyfiledialogs.png");
+    Image tmp_tColorhunt = LoadImage("utils/images/colorhunt.png");
+    Image tmp_tJ1gggs = LoadImage("utils/images/j1gggs.png");
+
+    ImageResize(
+        &tmp_tRay,
+        (int)MeasureTextHeight(raylib.Head, 30),
+        (int)MeasureTextHeight(raylib.Head, 30));
+
+    ImageResize(
+        &tmp_tLibtinyfiledialogs,
+        (int)MeasureTextHeight(libtinyfiledialogs.Head, 30),
+        (int)MeasureTextHeight(libtinyfiledialogs.Head, 30));
+
+    ImageResize(
+        &tmp_tColorhunt,
+        (int)MeasureTextHeight(Colorhunt.Head, 30),
+        (int)MeasureTextHeight(Colorhunt.Head, 30));
+
+    ImageResize(
+        &tmp_tJ1gggs,
+        (int)MeasureTextHeight(j1gggs.Head, 30),
+        (int)MeasureTextHeight(j1gggs.Head, 30));
+
+    tRay = LoadTextureFromImage(tmp_tRay);
+    tLibtinyfiledialogs = LoadTextureFromImage(tmp_tLibtinyfiledialogs);
+    tColorhunt = LoadTextureFromImage(tmp_tColorhunt);
+    tJ1gggs = LoadTextureFromImage(tmp_tJ1gggs);
+
+    UnloadImage(tmp_tJ1gggs);
+    UnloadImage(tmp_tColorhunt);
+    UnloadImage(tmp_tLibtinyfiledialogs);
+    UnloadImage(tmp_tRay);
+    Image_seal = 1;
+}
+
+void UnloadTimages()
+{
+    UnloadTexture(tColorhunt);
+    UnloadTexture(tRay);
+    UnloadTexture(tLibtinyfiledialogs);
+    UnloadTexture(tJ1gggs);
 }
 
 enum OPT DrawPlay()
@@ -342,12 +401,7 @@ enum OPT DrawSett()
     close.x = (GetScreenWidth() - GetScreenWidth() * 0.15f) + 50;
     close.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2)) + 50;
 
-    DrawRectangle(
-        (((GetScreenWidth() / 2) - (GetScreenWidth() - GetScreenWidth() * 0.15f) / 2)),
-        (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2)),
-        (GetScreenWidth() - GetScreenWidth() * 0.15f),
-        (GetScreenHeight() - GetScreenHeight() * 0.15f),
-        (Color){100, 100, 100, 200});
+    DrawRectangleRec(Subwindow, (Color){100, 100, 100, 200});
 
     DrawText("X", (GetScreenWidth() - GetScreenWidth() * 0.15f) + 50, (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2)) + 50, 50, BLACK);
     DrawRectangleRec(close, (Color){0, 0, 0, 0});
@@ -361,14 +415,88 @@ enum OPT DrawCre()
     close.x = (GetScreenWidth() - GetScreenWidth() * 0.15f) + 50;
     close.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2)) + 50;
 
-    DrawRectangle(
-        (((GetScreenWidth() / 2) - (GetScreenWidth() - GetScreenWidth() * 0.15f) / 2)),
-        (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2)),
-        (GetScreenWidth() - GetScreenWidth() * 0.15f),
-        (GetScreenHeight() - GetScreenHeight() * 0.15f),
-        (Color){100, 100, 100, 200});
+    raylib.Head = "Raylib: Graphics library";
+    raylib.body = "Raylib is a simple graphic library or C, made by ray-san\nIt is used as the base of this game";
+    raylib.rec = (Rectangle){
+        Subwindow.x + 50,
+        Subwindow.y + close.y + 50,
+        MeasureText(raylib.body, 15) + 40,
+        MeasureTextHeight(raylib.Head, 30) + MeasureTextHeight(raylib.body, 20) + 40,
+    };
+    raylib.CardColor = (Color){96, 116, 86, 255};
+    raylib.TextColor = BLACK;
 
-    DrawText("X", (GetScreenWidth() - GetScreenWidth() * 0.15f) + 50, (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2)) + 50, 50, BLACK);
+    libtinyfiledialogs.Head = "tinyfiledialogs";
+    libtinyfiledialogs.body = "tiny file dialogs is libaray that allows you to make\nPop up dialouges, Like the file manager dialouges";
+    libtinyfiledialogs.rec = (Rectangle){
+        Subwindow.x + 50 + raylib.rec.width + 20,
+        Subwindow.y + close.y + 50,
+        MeasureText(libtinyfiledialogs.body, 15) + 40,
+        MeasureTextHeight(libtinyfiledialogs.Head, 30) + MeasureTextHeight(libtinyfiledialogs.body, 20) + 40,
+    };
+    libtinyfiledialogs.CardColor = (Color){96, 116, 86, 255};
+    libtinyfiledialogs.TextColor = BLACK;
+
+    Colorhunt.Head = "ColorHunt";
+    Colorhunt.body = "Color Hunt is an open collection of beautiful color palettes,\ncreated by Gal Shir. Most of the color here are taken from their pallets";
+    Colorhunt.rec = (Rectangle){
+        Subwindow.x + 50 + raylib.rec.width + 20 + libtinyfiledialogs.rec.width + 20,
+        Subwindow.y + close.y + 50,
+        MeasureText(Colorhunt.body, 15) + 40,
+        MeasureTextHeight(Colorhunt.Head, 30) + MeasureTextHeight(Colorhunt.body, 20) + 40,
+    };
+    Colorhunt.CardColor = (Color){96, 116, 86, 255};
+    Colorhunt.TextColor = BLACK;
+
+    j1gggs.Head = "j1gggs";
+    j1gggs.body = "j1gggs is a Music artist whom i am a very fan of The Backgroud Music\nis from 'From The Start(Mewofy)' By him";
+    j1gggs.rec = (Rectangle){
+        Subwindow.x + 50,
+        Subwindow.y + close.y + 50 + raylib.rec.height + 20,
+        MeasureText(j1gggs.body, 15) + 40,
+        MeasureTextHeight(j1gggs.Head, 30) + MeasureTextHeight(j1gggs.body, 20) + 40,
+    };
+    j1gggs.CardColor = (Color){96, 116, 86, 255};
+    j1gggs.TextColor = BLACK;
+
+    if (Image_seal < 1)
+    {
+
+        InitImages();
+        raylib.img = tRay;
+        libtinyfiledialogs.img = tLibtinyfiledialogs;
+        Colorhunt.img = tColorhunt;
+        j1gggs.img = tJ1gggs;
+    }
+
+    DrawRectangleRec(Subwindow, (Color){100, 100, 100, 200});
+    DrawCard(raylib);
+    DrawCard(libtinyfiledialogs);
+    DrawCard(Colorhunt);
+    DrawCard(j1gggs);
+
+    DrawText(
+        "Devloped by Tillua467",
+        credit.x + ((credit.width / 2) - MeasureText("Devloped by Tillua467", 50) / 2),
+        close.y,
+        50,
+        BLACK);
+
+    DrawText(
+        "With the Help of....",
+        credit.x + ((credit.width / 2) - MeasureText("With Help of....", 50) / 2),
+        close.y + 50 + 15, // close.y + font size of the previous text + padding
+        40,
+        BLACK);
+
+    DrawText(
+        "X",
+        (GetScreenWidth() - GetScreenWidth() * 0.15f) + 50,
+        (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2)) + 50, // + padding
+        50,
+        BLACK);
+
+    // Close bound box
     DrawRectangleRec(close, (Color){0, 0, 0, 0});
     if (hoverButton(close) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
         return NONE;
@@ -377,6 +505,11 @@ enum OPT DrawCre()
 
 int DrawPlayMenu()
 {
+    Subwindow.x = (((GetScreenWidth() / 2) - (GetScreenWidth() - GetScreenWidth() * 0.15f) / 2));
+    Subwindow.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2));
+    Subwindow.width = (GetScreenWidth() - GetScreenWidth() * 0.15f);
+    Subwindow.height = (GetScreenHeight() - GetScreenHeight() * 0.15f);
+
     if (mode == PLAYING)
         return 2;
 

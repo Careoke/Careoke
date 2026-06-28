@@ -50,6 +50,7 @@ int main()
         EndDrawing();
     }
     UnloadMusicStream(bg);
+    UnloadTimages();
 
     for (int i = 0; i < MAX_FILEPATH_RECORDED; i++)
     {
