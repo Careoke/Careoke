@@ -30,6 +30,12 @@ Color Butcol4 = {
 Color Textcol = {
     98, 148, 89, 255};
 
+Color ExitButcol1 = {
+    218, 72, 72, 255};
+
+Color ExitButcol2 = {
+    64, 106, 175, 255};
+
 bool hoverButton(Rectangle rec)
 {
     return CheckCollisionPointRec(GetMousePosition(), rec);

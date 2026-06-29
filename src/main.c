@@ -12,7 +12,7 @@ int main()
     Music bg = LoadMusicStream("utils/audio/bg-from-yt.mp3");
 
     PlayMusicStream(bg);
-    while (!WindowShouldClose())
+    while (1)
     {
         if (mode != PLAYING)
             UpdateMusicStream(bg);

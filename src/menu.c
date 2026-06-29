@@ -11,6 +11,9 @@ Rectangle DropB1 = {0, 0, 0, 0};
 Rectangle DropB2 = {0, 0, 0, 0};
 Rectangle UrlBox = {0, 0, 0, 0};
 Rectangle Subwindow = {0};
+Rectangle ExitWindow = {0};
+Rectangle ExitButton1 = {0};
+Rectangle ExitButton2 = {0};
 
 Card raylib = {0};
 Card libtinyfiledialogs = {0};
@@ -31,6 +34,7 @@ char *filePaths[MAX_FILEPATH_RECORDED] = {0};
 int filePathCounter = 0;
 const char *filters[] = {"*.mp3", "*.lrc"};
 bool enter = false;
+bool showExit = false;
 
 bool isMp3 = 0;
 bool isLrc = 0;
@@ -104,6 +108,12 @@ void UnloadTimages()
 
 enum OPT DrawPlay()
 {
+    if (IsKeyPressed(KEY_ESCAPE))
+    {
+        enter = false;
+        return NONE;
+    }
+
     if (IsFileDropped())
     {
         FilePathList droppedFiles = LoadDroppedFiles();
@@ -397,6 +407,9 @@ enum OPT DrawPlay()
 
 enum OPT DrawSett()
 {
+    if (IsKeyPressed(KEY_ESCAPE))
+        return NONE;
+
     close.x = (GetScreenWidth() - GetScreenWidth() * 0.15f) + 50;
     close.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2)) + 50;
 
@@ -411,6 +424,9 @@ enum OPT DrawSett()
 
 enum OPT DrawCre()
 {
+    if (IsKeyPressed(KEY_ESCAPE))
+        return NONE;
+
     close.x = (GetScreenWidth() - GetScreenWidth() * 0.15f) + 50;
     close.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2)) + 50;
 
@@ -504,6 +520,8 @@ enum OPT DrawCre()
 
 int DrawPlayMenu()
 {
+    if (!isWindowFocus && IsKeyPressed(KEY_ESCAPE))
+        showExit = true;
     Subwindow.x = (((GetScreenWidth() / 2) - (GetScreenWidth() - GetScreenWidth() * 0.15f) / 2));
     Subwindow.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2));
     Subwindow.width = (GetScreenWidth() - GetScreenWidth() * 0.15f);
@@ -555,39 +573,100 @@ int DrawPlayMenu()
         Exit.y + 15,
         50, Textcol);
 
-    if (!isWindowFocus)
+    if (!showExit)
     {
-        if (hoverButton(play))
-            Butcol1.a = 150;
-        else
-            Butcol1.a = 255;
+        if (!isWindowFocus)
+        {
+            if (hoverButton(play))
+                Butcol1.a = 150;
+            else
+                Butcol1.a = 255;
 
-        if (hoverButton(setting))
-            Butcol2.a = 150;
-        else
-            Butcol2.a = 255;
+            if (hoverButton(setting))
+                Butcol2.a = 150;
+            else
+                Butcol2.a = 255;
 
-        if (hoverButton(credit))
-            Butcol3.a = 150;
-        else
-            Butcol3.a = 255;
+            if (hoverButton(credit))
+                Butcol3.a = 150;
+            else
+                Butcol3.a = 255;
 
-        if (hoverButton(Exit))
-            Butcol4.a = 150;
-        else
-            Butcol4.a = 255;
+            if (hoverButton(Exit))
+                Butcol4.a = 150;
+            else
+                Butcol4.a = 255;
+        }
+
+        if ((IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+        {
+            if (hoverButton(play))
+                option = PLAY;
+            if (hoverButton(setting))
+                option = SETTINGS;
+            if (hoverButton(credit))
+                option = CREDIT;
+            if (hoverButton(Exit))
+                showExit = true;
+        }
     }
 
-    if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT))
+    if (showExit)
     {
-        if (hoverButton(play))
-            option = PLAY;
-        if (hoverButton(setting))
-            option = SETTINGS;
-        if (hoverButton(credit))
-            option = CREDIT;
-        if (hoverButton(Exit))
+        DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){0, 0, 0, 255 / 1.5});
+        ExitWindow.width = GetScreenHeight() * 0.75f;
+        ExitWindow.height = GetScreenHeight() * 0.20f;
+        ExitWindow.x = GetScreenWidth() / 2 - ExitWindow.width / 2;
+        ExitWindow.y = GetScreenHeight() / 2 - ExitWindow.height / 2;
+        ExitButton1.width = ExitWindow.width * 0.35f;
+        ExitButton2.width = ExitButton1.width;
+        ExitButton1.height = ExitWindow.height * 0.25f;
+        ExitButton2.height = ExitButton1.height;
+        ExitButton1.y = ExitWindow.y + ExitWindow.height - ExitButton1.height - 20;
+        ExitButton2.y = ExitButton1.y;
+        ExitButton1.x = ExitWindow.x + 35;
+        ExitButton2.x = ExitButton1.x + ExitButton1.width + 60;
+
+        DrawRectangleRec(
+            ExitWindow,
+            (Color){101, 146, 135, 255});
+
+        DrawText(
+            "Would you Like to Exit?",
+            ExitWindow.x + 35,
+            ExitWindow.y + 35,
+            50,
+            (Color){177, 211, 185, 255});
+
+        DrawRectangleRec(ExitButton1, ExitButcol1);
+        DrawText(
+            "Exit",
+            ExitButton1.x + ((ExitButton1.width / 2) - MeasureText("Exit", 40) / 2),
+            ExitButton1.y + ((ExitButton1.height / 2) - MeasureTextHeight("Exit", 40) / 2),
+            40,
+            (Color){255, 229, 191, 255});
+        DrawRectangleRec(ExitButton2, ExitButcol2);
+        DrawText(
+            "Cancle",
+            ExitButton2.x + ((ExitButton2.width / 2) - MeasureText("Cancle", 40) / 2),
+            ExitButton2.y + ((ExitButton2.height / 2) - MeasureTextHeight("Cancle", 40) / 2),
+            40,
+            (Color){255, 229, 191, 255});
+
+        if (hoverButton(ExitButton1))
+            ExitButcol1.a = 200;
+        else if (hoverButton(ExitButton2))
+            ExitButcol2.a = 200;
+        else
+        {
+            ExitButcol1.a = 255;
+            ExitButcol2.a = 255;
+        }
+
+        if (hoverButton(ExitButton1) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
             return 1;
+        if (hoverButton(ExitButton2) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+            showExit = false;
     }
 
     if (option == PLAY)

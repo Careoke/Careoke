@@ -42,7 +42,8 @@ extern Color Butcol2;
 extern Color Butcol3;
 extern Color Butcol4;
 extern Color Textcol;
-
+extern Color ExitButcol1;
+extern Color ExitButcol2;
 /**
  * @brief Take a Rectangle rec and checks if there was a collision between the rectangle and mouse
  *
