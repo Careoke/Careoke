@@ -10,7 +10,6 @@ Rectangle close = {0, 0, 50, 50};
 Rectangle DropB1 = {0, 0, 0, 0};
 Rectangle DropB2 = {0, 0, 0, 0};
 Rectangle UrlBox = {0, 0, 0, 0};
-Rectangle BoundBox = {0, 0, 0, 0};
 Rectangle Subwindow = {0};
 
 Card raylib = {0};
@@ -154,8 +153,6 @@ enum OPT DrawPlay()
     if (isLrc && isMp3 && filePathCounter == 2)
         mode = PLAYING;
 
-    BoundBox.width = GetScreenWidth();
-    BoundBox.height = GetScreenHeight();
     DropB1.x = 0 + 60;
     DropB1.y = ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)) + 100;
     DropB1.width = (GetScreenWidth() - 180) / 2;
@@ -260,8 +257,7 @@ enum OPT DrawPlay()
 
     if (enter == true)
     {
-        DrawRectangleRec(BoundBox, (Color){0, 0, 0, 0});
-        if (filePathCounter < 2 && hoverButton(BoundBox) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+        if (filePathCounter < 2 && (hoverButton(DropB1) || hoverButton(DropB2)) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
         {
             char *tmpFilePaths = NULL;
 
@@ -392,7 +388,10 @@ enum OPT DrawPlay()
 
     enter = true;
     if (hoverButton(close) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+    {
+        enter = false;
         return NONE;
+    }
     return PLAY;
 }
 
