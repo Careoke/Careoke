@@ -6,22 +6,24 @@ MENU_SRC = src/menu.c src/utility.c
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
 
-TMENU = out/menu
 TARGET = out/game
 
 all: $(TARGET)
 
-menu: $(TMENU)
-	./$(TMENU)
-
-$(TMENU): $(MENU_SRC)
-	$(CC) $(CFLAGS) $^ -o $@ $(LDFLAGS)
-
-$(TARGET): $(OBJ)
+$(TARGET): $(OBJ) | out
 	$(CC) $(OBJ) -o $(TARGET) $(LDFLAGS)
+	./$(TARGET)
 
 src/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
+	
+out:
+	mkdir out
 
+ifeq ($(OS),Windows_NT)
 clean:
-	rm -f src/*.o $(TARGET)
+	del /q /s src\*.o out\*
+else
+clean:
+	rm -f src/*.o out/*
+endif
