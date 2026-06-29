@@ -520,7 +520,7 @@ enum OPT DrawCre()
 
 int DrawPlayMenu()
 {
-    if (!isWindowFocus && IsKeyPressed(KEY_ESCAPE))
+    if (!isWindowFocus && WindowShouldClose())
         showExit = true;
     Subwindow.x = (((GetScreenWidth() / 2) - (GetScreenWidth() - GetScreenWidth() * 0.15f) / 2));
     Subwindow.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2));
