@@ -48,6 +48,11 @@ extern enum STATE mode;
 extern char *filePaths[MAX_FILEPATH_RECORDED];
 extern int filePathCounter;
 
+extern Image tmp_tRay;
+extern Image tmp_tLibtinyfiledialogs;
+extern Image tmp_tColorhunt;
+extern Image tmp_tJ1gggs;
+
 /**
  * @brief does nothing
  *

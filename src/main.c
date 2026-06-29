@@ -9,6 +9,10 @@ int main()
     SetConfigFlags(FLAG_WINDOW_UNDECORATED);
     InitWindow(GetScreenWidth(), GetScreenHeight(), "Careoke");
     InitAudioDevice();
+    tmp_tRay = LoadImage("utils/images/raylib.png");
+    tmp_tLibtinyfiledialogs = LoadImage("utils/images/libtinyfiledialogs.png");
+    tmp_tColorhunt = LoadImage("utils/images/colorhunt.png");
+    tmp_tJ1gggs = LoadImage("utils/images/j1gggs.png");
     Music bg = LoadMusicStream("utils/audio/bg-from-yt.mp3");
 
     PlayMusicStream(bg);

@@ -20,6 +20,11 @@ Card libtinyfiledialogs = {0};
 Card Colorhunt = {0};
 Card j1gggs = {0};
 
+Image tmp_tRay = {0};
+Image tmp_tLibtinyfiledialogs = {0};
+Image tmp_tColorhunt = {0};
+Image tmp_tJ1gggs = {0};
+
 Texture2D tRay = {0};
 Texture2D tLibtinyfiledialogs = {0};
 Texture2D tColorhunt = {0};
@@ -61,11 +66,6 @@ void idk()
 
 void InitImages()
 {
-    Image tmp_tRay = LoadImage("utils/images/raylib.png");
-    Image tmp_tLibtinyfiledialogs = LoadImage("utils/images/libtinyfiledialogs.png");
-    Image tmp_tColorhunt = LoadImage("utils/images/colorhunt.png");
-    Image tmp_tJ1gggs = LoadImage("utils/images/j1gggs.png");
-
     ImageResize(
         &tmp_tRay,
         (int)MeasureTextHeight(raylib.Head, 30),
