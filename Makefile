@@ -1,7 +1,10 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -Iinclude
-LDFLAGS =  -lraylib -lopengl32 -lgdi32 -lwinmm -lcomdlg32 -lole32
-
+ifeq ($(OS),Windows_NT)
+	LDFLAGS =  -lraylib -lopengl32 -lgdi32 -lwinmm -lcomdlg32 -lole32
+else
+	LDFLAGS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
+endif
 MENU_SRC = src/menu.c src/utility.c
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
@@ -12,6 +15,8 @@ all: $(TARGET)
 
 $(TARGET): $(OBJ) | out
 	$(CC) $(OBJ) -o $(TARGET) $(LDFLAGS)
+
+run:
 	./$(TARGET)
 
 src/%.o: src/%.c
