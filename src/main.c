@@ -6,8 +6,8 @@ int main()
 {
     int index = 0, index2 = 1;
 
-    SetConfigFlags(FLAG_WINDOW_UNDECORATED);
-    InitWindow(GetScreenWidth(), GetScreenHeight(), "Careoke");
+    InitWindow(GetScreenWidth(), 720, "Careoke");
+    ToggleBorderlessWindowed();
     InitAudioDevice();
     tmp_tRay = LoadImage("utils/images/raylib.png");
     tmp_tLibtinyfiledialogs = LoadImage("utils/images/libtinyfiledialogs.png");
