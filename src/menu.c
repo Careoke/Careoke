@@ -270,7 +270,6 @@ enum OPT DrawPlay()
         if (filePathCounter < 2 && (hoverButton(DropB1) || hoverButton(DropB2)) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
         {
             char *tmpFilePaths = NULL;
-
             if (filePathCounter == 1)
             {
                 tmpFilePaths = tinyfd_openFileDialog(
@@ -282,22 +281,25 @@ enum OPT DrawPlay()
                     0);
                 if (tmpFilePaths != NULL)
                 {
-                    if (!IsFileExtension(tmpFilePaths, GetFileExtension(filePaths[filePathCounter - 1])))
+                    if (IsFileExtension(tmpFilePaths, ".mp3") || IsFileExtension(tmpFilePaths, ".lrc"))
                     {
-                        int pathLen = strlen(tmpFilePaths) + 1;
-                        filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
-                        strcpy(filePaths[filePathCounter], tmpFilePaths);
-                        if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                        if (!IsFileExtension(tmpFilePaths, GetFileExtension(filePaths[filePathCounter - 1])))
                         {
-                            isLrc = 1;
-                            inMp3 = 1;
-                            inLrc = 0;
+                            int pathLen = strlen(tmpFilePaths) + 1;
+                            filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
+                            strcpy(filePaths[filePathCounter], tmpFilePaths);
+                            if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                            {
+                                isLrc = 1;
+                                inMp3 = 1;
+                                inLrc = 0;
+                            }
+                            else
+                            {
+                                isMp3 = 1;
+                            }
+                            filePathCounter++;
                         }
-                        else
-                        {
-                            isMp3 = 1;
-                        }
-                        filePathCounter++;
                     }
                     else
                     {
@@ -321,44 +323,45 @@ enum OPT DrawPlay()
                     {
                         char *currentPath1 = strtok(tmpFilePaths, "|");
                         char *currentPath2 = strtok(NULL, "|");
-
-                        if (!(IsFileExtension(currentPath1, ".mp3") || IsFileExtension(currentPath1, ".lrc")) || (!IsFileExtension(currentPath2, ".mp3") || IsFileExtension(currentPath2, ".lrc")))
+                        if (((IsFileExtension(currentPath1, ".mp3") || IsFileExtension(currentPath1, ".lrc"))) || (IsFileExtension(currentPath2, ".mp3") || IsFileExtension(currentPath2, ".lrc")))
+                        {
+                            if (IsFileExtension(currentPath1, ".mp3") || IsFileExtension(currentPath1, ".lrc"))
+                            {
+                                int pathLen = strlen(currentPath1) + 1;
+                                filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
+                                strcpy(filePaths[filePathCounter], currentPath1);
+                                if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                                {
+                                    isLrc = 1;
+                                    inMp3 = 1;
+                                    inLrc = 0;
+                                }
+                                else
+                                {
+                                    isMp3 = 1;
+                                }
+                                filePathCounter++;
+                            }
+                            if (IsFileExtension(currentPath2, ".mp3") || IsFileExtension(currentPath2, ".lrc"))
+                            {
+                                int pathLen = strlen(currentPath2) + 1;
+                                filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
+                                strcpy(filePaths[filePathCounter], currentPath2);
+                                if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                                {
+                                    isLrc = 1;
+                                    inMp3 = 1;
+                                    inLrc = 0;
+                                }
+                                else
+                                {
+                                    isMp3 = 1;
+                                }
+                                filePathCounter++;
+                            }
+                        }
+                        else
                             errTime = 3000.0f;
-
-                        if (IsFileExtension(currentPath1, ".mp3") || IsFileExtension(currentPath1, ".lrc"))
-                        {
-                            int pathLen = strlen(currentPath1) + 1;
-                            filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
-                            strcpy(filePaths[filePathCounter], currentPath1);
-                            if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
-                            {
-                                isLrc = 1;
-                                inMp3 = 1;
-                                inLrc = 0;
-                            }
-                            else
-                            {
-                                isMp3 = 1;
-                            }
-                            filePathCounter++;
-                        }
-                        if (IsFileExtension(currentPath2, ".mp3") || IsFileExtension(currentPath2, ".lrc"))
-                        {
-                            int pathLen = strlen(currentPath2) + 1;
-                            filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
-                            strcpy(filePaths[filePathCounter], currentPath2);
-                            if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
-                            {
-                                isLrc = 1;
-                                inMp3 = 1;
-                                inLrc = 0;
-                            }
-                            else
-                            {
-                                isMp3 = 1;
-                            }
-                            filePathCounter++;
-                        }
                         if (filePathCounter < 2) // don't free before we even allocate and do other stuff
                         {
                             RL_FREE(currentPath1);
@@ -367,23 +370,25 @@ enum OPT DrawPlay()
                     }
                     else
                     {
-                        if (!(IsFileExtension(tmpFilePaths, ".mp3") || IsFileExtension(tmpFilePaths, ".lrc")))
-                            errTime = 3000.0f;
-
-                        int pathLen = strlen(tmpFilePaths) + 1;
-                        filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
-                        strcpy(filePaths[filePathCounter], tmpFilePaths);
-                        if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                        if ((IsFileExtension(tmpFilePaths, ".mp3") || IsFileExtension(tmpFilePaths, ".lrc")))
                         {
-                            isLrc = 1;
-                            inMp3 = 1;
-                            inLrc = 0;
+                            int pathLen = strlen(tmpFilePaths) + 1;
+                            filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
+                            strcpy(filePaths[filePathCounter], tmpFilePaths);
+                            if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                            {
+                                isLrc = 1;
+                                inMp3 = 1;
+                                inLrc = 0;
+                            }
+                            else
+                            {
+                                isMp3 = 1;
+                            }
+                            filePathCounter++;
                         }
                         else
-                        {
-                            isMp3 = 1;
-                        }
-                        filePathCounter++;
+                            errTime = 3000.0f;
                     }
                 }
             }
