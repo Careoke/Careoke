@@ -362,11 +362,6 @@ enum OPT DrawPlay()
                         }
                         else
                             errTime = 3000.0f;
-                        if (filePathCounter < 2) // don't free before we even allocate and do other stuff
-                        {
-                            RL_FREE(currentPath1);
-                            RL_FREE(currentPath2);
-                        }
                     }
                     else
                     {
