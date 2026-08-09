@@ -18,17 +18,10 @@ int main()
     PlayMusicStream(bg);
     while (1)
     {
-        if (mode != PLAYING)
+        if (mode == NOT)
             UpdateMusicStream(bg);
         else
-        {
-            if (bg.stream.buffer != NULL)
-            {
-                StopMusicStream(bg);
-                UnloadMusicStream(bg);
-                bg.stream.buffer = NULL;
-            }
-        }
+            PauseMusicStream(bg);
         BeginDrawing();
         ClearBackground(Mencol);
 
@@ -36,6 +29,8 @@ int main()
 
         if (menuState == 2)
         {
+            PauseMusicStream(bg);
+
             if (!IsFileExtension(filePaths[index], ".mp3"))
             {
                 index = 1;
@@ -43,8 +38,23 @@ int main()
             }
 
             if (filePaths[index] != NULL && filePaths[index2] != NULL)
+            {
                 if (Player(filePaths[index], filePaths[index2]))
-                    break;
+                {
+                    menuState = 0;
+                    for (int i = 0; i < MAX_FILEPATH_RECORDED; i++)
+                    {
+                        if (filePaths[i] != NULL)
+                        {
+                            RL_FREE(filePaths[i]);
+                            filePaths[i] = NULL;
+                        }
+                    }
+                    filePathCounter = 0;
+                    SeekMusicStream(bg, 0.0f);
+                    ResumeMusicStream(bg);
+                }
+            }
         }
         if (menuState == 1)
         {

@@ -4,6 +4,8 @@
 #include <raylib.h>
 #include <stdbool.h>
 #include "../headers/tokenizer.h"
+#include "../headers/menu.h"
+#include "../headers/utility.h"
 
 /**
  * @brief the player of the game

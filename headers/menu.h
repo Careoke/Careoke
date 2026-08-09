@@ -10,17 +10,17 @@
 /**
  * @brief a enum that holds the current state of the game
  *
- * @var START when the game hasn't started yet
- *
- * @var PLAYING when the game is started
+ * @var PLAYING when the game is playing
  *
  * @var PAUSED when the game is started but paused
+ *
+ * @var NOT when the game is not loaded
  */
 enum STATE
 {
-    START,
     PLAYING,
-    PAUSED
+    PAUSED,
+    NOT
 };
 
 /**
@@ -47,7 +47,7 @@ extern enum STATE mode;
 
 extern char *filePaths[MAX_FILEPATH_RECORDED];
 extern int filePathCounter;
-
+extern bool enter;
 extern Image tmp_tRay;
 extern Image tmp_tLibtinyfiledialogs;
 extern Image tmp_tColorhunt;
@@ -96,6 +96,5 @@ enum OPT DrawCre();
  * @returns Returns a integer value (2 = game should start, 1 = game should exit, 0 = do nothing)
  */
 int DrawPlayMenu();
-void DrawPauseMenu();
 
 #endif // !MENU_H

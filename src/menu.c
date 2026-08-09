@@ -31,7 +31,7 @@ Texture2D tColorhunt = {0};
 Texture2D tJ1gggs = {0};
 
 enum OPT option = NONE;
-enum STATE mode = START;
+enum STATE mode = NOT;
 
 bool isWindowFocus = false;
 int errTime;
@@ -160,8 +160,16 @@ enum OPT DrawPlay()
         UnloadDroppedFiles(droppedFiles);
     }
 
-    if (isLrc && isMp3 && filePathCounter == 2)
-        mode = PLAYING;
+    if (mode == NOT)
+        if (isLrc && isMp3 && filePathCounter == 2)
+            mode = PLAYING;
+    if (filePathCounter == 0)
+    {
+        inMp3 = 0;
+        inLrc = 0;
+        isLrc = 0;
+        isMp3 = 0;
+    }
 
     DropB1.x = 0 + 60;
     DropB1.y = ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)) + 100;
@@ -527,7 +535,7 @@ int DrawPlayMenu()
     Subwindow.width = (GetScreenWidth() - GetScreenWidth() * 0.15f);
     Subwindow.height = (GetScreenHeight() - GetScreenHeight() * 0.15f);
 
-    if (mode == PLAYING)
+    if (mode != NOT)
         return 2;
 
     if (option != NONE)
@@ -669,14 +677,17 @@ int DrawPlayMenu()
             showExit = false;
     }
 
-    if (option == PLAY)
-        option = DrawPlay();
-    else if (option == SETTINGS)
-        option = DrawSett();
-    else if (option == CREDIT)
-        option = DrawCre();
-    else
-        idk();
+    if (mode == NOT)
+    {
+        if (option == PLAY)
+            option = DrawPlay();
+        else if (option == SETTINGS)
+            option = DrawSett();
+        else if (option == CREDIT)
+            option = DrawCre();
+        else
+            idk();
+    }
 
     return 0;
 }
