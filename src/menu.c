@@ -260,7 +260,7 @@ enum OPT DrawPlay()
         DrawRectangleRec(
             UrlBox,
             (Color){0, 0, 0, 0});
-        if (hoverButton(UrlBox) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+        if (hoverButton(UrlBox) && isMouseClicked())
             OpenURL("https://lrclib.net/");
     }
     else
@@ -275,7 +275,7 @@ enum OPT DrawPlay()
 
     if (enter == true)
     {
-        if (filePathCounter < 2 && (hoverButton(DropB1) || hoverButton(DropB2)) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+        if (filePathCounter < 2 && (hoverButton(DropB1) || hoverButton(DropB2)) && isMouseClicked())
         {
             char *tmpFilePaths = NULL;
             if (filePathCounter == 1)
@@ -405,7 +405,7 @@ enum OPT DrawPlay()
     }
 
     enter = true;
-    if (hoverButton(close) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+    if (hoverButton(close) && isMouseClicked())
     {
         enter = false;
         return NONE;
@@ -425,7 +425,7 @@ enum OPT DrawSett()
 
     DrawText("X", (GetScreenWidth() - GetScreenWidth() * 0.15f) + 50, (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2)) + 50, 50, BLACK);
     DrawRectangleRec(close, (Color){0, 0, 0, 0});
-    if (hoverButton(close) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+    if (hoverButton(close) && isMouseClicked())
         return NONE;
     return SETTINGS;
 }
@@ -521,7 +521,7 @@ enum OPT DrawCre()
 
     // Close bound box
     DrawRectangleRec(close, (Color){0, 0, 0, 0});
-    if (hoverButton(close) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+    if (hoverButton(close) && isMouseClicked())
         return NONE;
     return CREDIT;
 }
@@ -606,7 +606,7 @@ int DrawPlayMenu()
                 Butcol4.a = 255;
         }
 
-        if ((IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+        if (isMouseClicked())
         {
             if (hoverButton(play))
                 option = PLAY;
@@ -671,9 +671,9 @@ int DrawPlayMenu()
             ExitButcol2.a = 255;
         }
 
-        if (hoverButton(ExitButton1) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+        if (hoverButton(ExitButton1) && isMouseClicked())
             return 1;
-        if (hoverButton(ExitButton2) && (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT) || IsMouseButtonPressed(MOUSE_BUTTON_LEFT)))
+        if (hoverButton(ExitButton2) && isMouseClicked())
             showExit = false;
     }
 

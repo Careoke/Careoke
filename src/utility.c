@@ -41,6 +41,11 @@ bool hoverButton(Rectangle rec)
     return CheckCollisionPointRec(GetMousePosition(), rec);
 }
 
+bool isMouseClicked()
+{
+    return (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT));
+}
+
 void ShowMessage(const char *msg, int padding, Postions pos, Color col, int fontSize)
 {
     int screenW = GetScreenWidth();

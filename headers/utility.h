@@ -54,6 +54,15 @@ extern Color ExitButcol2;
 bool hoverButton(Rectangle rec);
 
 /**
+ * @brief Checks if any mouse button clicked
+ *
+ * @warning returns true for both left anf right
+ *
+ * @return Returns true if clicked false if no
+ */
+bool isMouseClicked();
+
+/**
  * @brief Shows a Dialouge with a message
  *
  * @var msg The message

@@ -57,7 +57,7 @@ bool Player(char *musicDir, char *lrcDir)
         DrawRectangle(30, 30, 20, 60, BLACK);
         DrawRectangle(30 + 30 + 5, 30, 20, 60, BLACK);
         DrawRectangleRec(PauseBound, (Color){0});
-        if (hoverButton(PauseBound) && (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)))
+        if (hoverButton(PauseBound) && isMouseClicked())
             mode = PAUSED;
 
         if (mode != PAUSED)
@@ -161,14 +161,14 @@ bool Player(char *musicDir, char *lrcDir)
             else
                 PbutCol4.a = 255;
 
-            if (hoverButton(Play) && (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)))
+            if (hoverButton(Play) && isMouseClicked())
             {
                 mode = PLAYING;
                 PlayMusicStream(mus);
             }
-            if (hoverButton(Setting) && (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)))
+            if (hoverButton(Setting) && isMouseClicked())
                 idk();
-            if (hoverButton(pExit) && (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)))
+            if (hoverButton(pExit) && isMouseClicked())
             {
                 StopMusicStream(mus);
                 UnloadMusicStream(mus);
@@ -182,7 +182,7 @@ bool Player(char *musicDir, char *lrcDir)
 
                 return true;
             }
-            if (hoverButton(Restart) && (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)))
+            if (hoverButton(Restart) && isMouseClicked())
             {
                 ti = 0;
                 SeekMusicStream(mus, 0.0f);
