@@ -42,15 +42,7 @@ int main()
                 if (Player(filePaths[index], filePaths[index2]))
                 {
                     menuState = 0;
-                    for (int i = 0; i < MAX_FILEPATH_RECORDED; i++)
-                    {
-                        if (filePaths[i] != NULL)
-                        {
-                            RL_FREE(filePaths[i]);
-                            filePaths[i] = NULL;
-                        }
-                    }
-                    filePathCounter = 0;
+                    freeFilePaths();
                     SeekMusicStream(bg, 0.0f);
                     ResumeMusicStream(bg);
                 }
@@ -65,15 +57,7 @@ int main()
     }
     UnloadMusicStream(bg);
     UnloadTimages();
-
-    for (int i = 0; i < MAX_FILEPATH_RECORDED; i++)
-    {
-        if (filePaths[i] != NULL)
-        {
-            RL_FREE(filePaths[i]);
-            filePaths[i] = NULL;
-        }
-    }
+    freeFilePaths();
     CloseWindow();
 
     return 0;

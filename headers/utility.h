@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <raylib.h>
-
+#include "../headers/menu.h"
 /**
  * @brief a enum that holds postions to show a dialouge
  */
@@ -61,6 +61,11 @@ bool hoverButton(Rectangle rec);
  * @return Returns true if clicked false if no
  */
 bool isMouseClicked();
+
+/**
+ * breif free the `filePaths[]` array
+ */
+void freeFilePaths();
 
 /**
  * @brief Shows a Dialouge with a message

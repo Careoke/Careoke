@@ -46,6 +46,19 @@ bool isMouseClicked()
     return (IsMouseButtonPressed(MOUSE_BUTTON_LEFT) || IsMouseButtonPressed(MOUSE_BUTTON_RIGHT));
 }
 
+void freeFilePaths()
+{
+    for (int i = 0; i < MAX_FILEPATH_RECORDED; i++)
+    {
+        if (filePaths[i] != NULL)
+        {
+            RL_FREE(filePaths[i]);
+            filePaths[i] = NULL;
+        }
+    }
+    filePathCounter = 0;
+}
+
 void ShowMessage(const char *msg, int padding, Postions pos, Color col, int fontSize)
 {
     int screenW = GetScreenWidth();
