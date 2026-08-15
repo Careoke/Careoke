@@ -1,13 +1,12 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -Iinclude
+CC = cc
+CFLAGS = -Wall -Wextra -Iinclude -O2
 ifeq ($(OS),Windows_NT)
 	LDFLAGS =  -lraylib -lopengl32 -lgdi32 -lwinmm -lcomdlg32 -lole32
 else
 	LDFLAGS = -lraylib -lGL -lm -lpthread -ldl -lrt -lX11
 endif
-MENU_SRC = src/menu.c src/utility.c
 SRC = $(wildcard src/*.c)
-OBJ = $(SRC:.c=.o)
+OBJ = $(patsubst src/%.c,out/obj/%.o,$(SRC))
 
 TARGET = out/game
 
@@ -16,19 +15,24 @@ all: $(TARGET)
 $(TARGET): $(OBJ) | out
 	$(CC) $(OBJ) -o $(TARGET) $(LDFLAGS)
 
-run:
+run: $(TARGET)
 	./$(TARGET)
 
-src/%.o: src/%.c
+	
+out/obj/%.o: src/%.c | out/obj
 	$(CC) $(CFLAGS) -c $< -o $@
 	
+
 out:
 	mkdir out
 
+out/obj:
+	mkdir out\obj
+
 ifeq ($(OS),Windows_NT)
 clean:
-	del /q /s src\*.o out\*
+	rmdir /s /q out
 else
 clean:
-	rm -f src/*.o out/*
+	rm -rf out
 endif
