@@ -47,6 +47,7 @@ extern enum STATE mode;
 
 extern char *filePaths[MAX_FILEPATH_RECORDED];
 extern int filePathCounter;
+extern Rectangle Subwindow;
 extern bool enter;
 extern Image tmp_tRay;
 extern Image tmp_tLibtinyfiledialogs;

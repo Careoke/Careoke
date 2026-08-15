@@ -1,11 +1,13 @@
 #include "../headers/player.h"
 
 bool seal = 1;
+bool showWindow = 0;
 Rectangle Play = {0, 0, 400, 75};
 Rectangle Setting = {0, 0, 400, 75};
 Rectangle pExit = {0, 0, 400, 75};
 Rectangle Restart = {0, 0, 400, 75};
 Rectangle PauseBound = {30, 30, 30 + 30 + 5, 60};
+Rectangle Pclose = {0, 0, 50, 50};
 
 Color PbutCol1 = {136, 189, 164, 255};
 Color PbutCol2 = {136, 189, 164, 255};
@@ -37,20 +39,20 @@ bool Player(char *musicDir, char *lrcDir)
         seal = 0;
         isLoaded = 1;
     }
-
-    if (IsKeyPressed(KEY_ESCAPE))
-    {
-        if (mode == PLAYING)
+    if (!showWindow)
+        if (IsKeyPressed(KEY_ESCAPE))
         {
-            mode = PAUSED;
-            PauseMusicStream(mus);
+            if (mode == PLAYING)
+            {
+                mode = PAUSED;
+                PauseMusicStream(mus);
+            }
+            else
+            {
+                mode = PLAYING;
+                PlayMusicStream(mus);
+            }
         }
-        else
-        {
-            mode = PLAYING;
-            PlayMusicStream(mus);
-        }
-    }
 
     if (isLoaded)
     {
@@ -140,54 +142,70 @@ bool Player(char *musicDir, char *lrcDir)
                 pExit.y + pExit.height / 2 - MeasureTextHeight("MAIN MENU", 35) / 2,
                 35,
                 Texcol);
-
-            if (hoverButton(Play))
-                PbutCol1.a = 195;
-            else
-                PbutCol1.a = 255;
-
-            if (hoverButton(Setting))
-                PbutCol2.a = 195;
-            else
-                PbutCol2.a = 255;
-
-            if (hoverButton(pExit))
-                PbutCol3.a = 195;
-            else
-                PbutCol3.a = 255;
-
-            if (hoverButton(Restart))
-                PbutCol4.a = 195;
-            else
-                PbutCol4.a = 255;
-
-            if (hoverButton(Play) && isMouseClicked())
+            if (showWindow)
             {
-                mode = PLAYING;
-                PlayMusicStream(mus);
+                Pclose.x = (GetScreenWidth() - GetScreenWidth() * 0.15f) + 50;
+                Pclose.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2)) + 50;
+
+                DrawRectangleRec(Subwindow, (Color){100, 100, 100, 200});
+                DrawText("X", (GetScreenWidth() - GetScreenWidth() * 0.15f) + 50, (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.15f) / 2)) + 50, 50, BLACK);
+                DrawRectangleRec(Pclose, (Color){0, 0, 0, 0});
+
+                if ((hoverButton(Pclose) && isMouseClicked()) || IsKeyPressed(KEY_ESCAPE))
+                    showWindow = false;
             }
-            if (hoverButton(Setting) && isMouseClicked())
-                idk();
-            if (hoverButton(pExit) && isMouseClicked())
+            else
             {
-                StopMusicStream(mus);
-                UnloadMusicStream(mus);
+                {
+                    if (hoverButton(Play))
+                        PbutCol1.a = 195;
+                    else
+                        PbutCol1.a = 255;
 
-                isLoaded = false;
-                seal = true;
-                ti = 0;
-                mode = NOT;
-                option = NONE;
-                enter = false;
+                    if (hoverButton(Setting))
+                        PbutCol2.a = 195;
+                    else
+                        PbutCol2.a = 255;
 
-                return true;
-            }
-            if (hoverButton(Restart) && isMouseClicked())
-            {
-                ti = 0;
-                SeekMusicStream(mus, 0.0f);
-                mode = PLAYING;
-                PlayMusicStream(mus);
+                    if (hoverButton(pExit))
+                        PbutCol3.a = 195;
+                    else
+                        PbutCol3.a = 255;
+
+                    if (hoverButton(Restart))
+                        PbutCol4.a = 195;
+                    else
+                        PbutCol4.a = 255;
+
+                    if (hoverButton(Play) && isMouseClicked())
+                    {
+                        mode = PLAYING;
+                        PlayMusicStream(mus);
+                    }
+                    if (hoverButton(Setting) && isMouseClicked())
+                        showWindow = !(showWindow);
+                    if (hoverButton(pExit) && isMouseClicked())
+                    {
+                        StopMusicStream(mus);
+                        UnloadMusicStream(mus);
+
+                        isLoaded = false;
+                        seal = true;
+                        ti = 0;
+                        mode = NOT;
+                        option = NONE;
+                        enter = false;
+
+                        return true;
+                    }
+                    if (hoverButton(Restart) && isMouseClicked())
+                    {
+                        ti = 0;
+                        SeekMusicStream(mus, 0.0f);
+                        mode = PLAYING;
+                        PlayMusicStream(mus);
+                    }
+                }
             }
         }
     }
