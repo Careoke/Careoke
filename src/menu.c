@@ -37,6 +37,8 @@ bool isWindowFocus = false;
 int errTime;
 char *filePaths[MAX_FILEPATH_RECORDED] = {0};
 int filePathCounter = 0;
+char *tmpMp3Path = NULL;
+char *tmpLrcPath = NULL;
 const char *filters[] = {"*.mp3", "*.lrc"};
 bool enter = false;
 bool showExit = false;
@@ -186,6 +188,40 @@ enum OPT DrawPlay()
     close.x = (GetScreenWidth() - GetScreenWidth() * 0.1f) + 50;
     close.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.1f) / 2)) + 50;
 
+    if (filePaths[inMp3] && tmpMp3Path == NULL)
+    {
+        if (DropB1.width <= MeasureText(GetFileName(filePaths[inMp3]), 40))
+        {
+            size_t size_tmpMp3Path = ((DropB1.width - MeasureText("...", 40)) / 40);
+            tmpMp3Path = malloc(size_tmpMp3Path + 4);
+            strncpy(tmpMp3Path, GetFileName(filePaths[inMp3]), size_tmpMp3Path);
+            tmpMp3Path[size_tmpMp3Path] = '\0';
+            strcat(tmpMp3Path, "...");
+        }
+        else
+        {
+            tmpMp3Path = malloc(strlen(GetFileName(filePaths[inMp3])) + 1);
+            strcpy(tmpMp3Path, GetFileName(filePaths[inMp3]));
+        }
+    }
+
+    if (filePaths[inLrc] && tmpLrcPath == NULL)
+    {
+        if (DropB1.width <= MeasureText(GetFileName(filePaths[inLrc]), 40))
+        {
+            size_t size_tmpLrcPath = ((DropB1.width - MeasureText("...", 40)) / 40);
+            tmpLrcPath = malloc(size_tmpLrcPath + 4);
+            strncpy(tmpLrcPath, GetFileName(filePaths[inLrc]), size_tmpLrcPath);
+            tmpLrcPath[size_tmpLrcPath] = '\0';
+            strcat(tmpLrcPath, "...");
+        }
+        else
+        {
+            tmpLrcPath = malloc(strlen(GetFileName(filePaths[inLrc])) + 1);
+            strcpy(tmpLrcPath, GetFileName(filePaths[inLrc]));
+        }
+    }
+
     DrawRectangle(
         0,
         0,
@@ -226,8 +262,8 @@ enum OPT DrawPlay()
             (Color){252, 249, 234, 255});
     else
         DrawText(
-            TextFormat("%s", GetFileName(filePaths[inMp3])),
-            (60 + DropB1.width / 2) - (MeasureText(TextFormat("%s", GetFileName(filePaths[inMp3])), 40) / 2),
+            TextFormat("%s", tmpMp3Path),
+            (60 + DropB1.width / 2) - (MeasureText(tmpMp3Path, 40) / 2),
             DropB1.y + (DropB1.height / 2),
             40,
             (Color){252, 249, 234, 255});
@@ -266,8 +302,8 @@ enum OPT DrawPlay()
     else
     {
         DrawText(
-            TextFormat("%s", GetFileName(filePaths[inLrc])),
-            ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText(TextFormat("%s", GetFileName(filePaths[inLrc])), 40) / 2),
+            TextFormat("%s", tmpLrcPath),
+            ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText(tmpLrcPath, 40) / 2),
             DropB2.y + (DropB2.height / 2),
             40,
             (Color){252, 249, 234, 255});

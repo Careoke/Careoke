@@ -46,6 +46,8 @@ extern enum OPT option;
 extern enum STATE mode;
 
 extern char *filePaths[MAX_FILEPATH_RECORDED];
+extern char *tmpMp3Path;
+extern char *tmpLrcPath;
 extern int filePathCounter;
 extern Rectangle Subwindow;
 extern bool enter;

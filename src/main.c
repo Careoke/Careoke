@@ -43,6 +43,10 @@ int main()
                 {
                     menuState = 0;
                     freeFilePaths();
+                    free(tmpMp3Path);
+                    free(tmpLrcPath);
+                    tmpMp3Path = NULL;
+                    tmpLrcPath = NULL;
                     SeekMusicStream(bg, 0.0f);
                     ResumeMusicStream(bg);
                 }
