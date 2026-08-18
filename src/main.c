@@ -41,6 +41,8 @@ int main()
             {
                 if (Player(filePaths[index], filePaths[index2]))
                 {
+                    index = 0;
+                    index2 = 1;
                     menuState = 0;
                     freeFilePaths();
                     free(tmpMp3Path);
