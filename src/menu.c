@@ -7,6 +7,8 @@ Rectangle setting = {0, 0, 400, 75};
 Rectangle credit = {0, 0, 400, 75};
 Rectangle Exit = {0, 0, 400, 75};
 Rectangle close = {0, 0, 50, 50};
+Rectangle Discard1 = {0};
+Rectangle Discard2 = {0};
 Rectangle DropB1 = {0, 0, 0, 0};
 Rectangle DropB2 = {0, 0, 0, 0};
 Rectangle UrlBox = {0, 0, 0, 0};
@@ -42,11 +44,12 @@ char *tmpLrcPath = NULL;
 const char *filters[] = {"*.mp3", "*.lrc"};
 bool enter = false;
 bool showExit = false;
+bool DropBoxHovered = 0;
 
 bool isMp3 = 0;
 bool isLrc = 0;
-int inMp3 = 0;
-int inLrc = 1;
+int inMp3 = -1;
+int inLrc = -1;
 int Image_seal = 0;
 
 /*
@@ -167,8 +170,8 @@ enum OPT DrawPlay()
             mode = PLAYING;
     if (filePathCounter == 0)
     {
-        inMp3 = 0;
-        inLrc = 0;
+        inMp3 = -1;
+        inLrc = -1;
         isLrc = 0;
         isMp3 = 0;
     }
@@ -177,10 +180,18 @@ enum OPT DrawPlay()
     DropB1.y = ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)) + 100;
     DropB1.width = (GetScreenWidth() - 180) / 2;
     DropB1.height = (GetScreenHeight() - DropB1.y) - 50;
+    Discard1.width = 70;
+    Discard1.height = 70;
+    Discard1.x = DropB1.x + DropB1.width - Discard1.width - 7;
+    Discard1.y = DropB1.y + 7;
     DropB2.x = 60 + DropB1.width + 60;
     DropB2.y = DropB1.y;
     DropB2.width = (GetScreenWidth() - 180) / 2;
     DropB2.height = (GetScreenHeight() - DropB1.y) - 50;
+    Discard2.width = 70;
+    Discard2.height = 70;
+    Discard2.x = DropB2.x + DropB2.width - Discard2.width - 7;
+    Discard2.y = DropB2.y + 7;
     UrlBox.x = ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("Drop your Lrc file Here :D", 20) / 2);
     UrlBox.y = DropB2.y + (DropB2.height / 2) + 40 + 20,
     UrlBox.width = MeasureText("Drop your Lrc file Here :D", 20),
@@ -188,8 +199,9 @@ enum OPT DrawPlay()
     close.x = (GetScreenWidth() - GetScreenWidth() * 0.1f) + 50;
     close.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.1f) / 2)) + 50;
 
-    if (filePaths[inMp3] && tmpMp3Path == NULL)
+    if (inMp3 != -1 && filePaths[inMp3] && tmpMp3Path == NULL)
     {
+        TraceLog(LOG_INFO, "%s", filePaths[inMp3]);
         if (DropB1.width <= MeasureText(GetFileName(filePaths[inMp3]), 40))
         {
             size_t size_tmpMp3Path = ((DropB1.width - MeasureText("...", 40)) / 40);
@@ -200,12 +212,13 @@ enum OPT DrawPlay()
         }
         else
         {
+            TraceLog(LOG_INFO, "%s", filePaths[inMp3]);
             tmpMp3Path = malloc(strlen(GetFileName(filePaths[inMp3])) + 1);
             strcpy(tmpMp3Path, GetFileName(filePaths[inMp3]));
         }
     }
 
-    if (filePaths[inLrc] && tmpLrcPath == NULL)
+    if (inLrc != -1 && filePaths[inLrc] && tmpLrcPath == NULL)
     {
         if (DropB1.width <= MeasureText(GetFileName(filePaths[inLrc]), 40))
         {
@@ -261,12 +274,32 @@ enum OPT DrawPlay()
             40,
             (Color){252, 249, 234, 255});
     else
+    {
         DrawText(
             TextFormat("%s", tmpMp3Path),
             (60 + DropB1.width / 2) - (MeasureText(tmpMp3Path, 40) / 2),
             DropB1.y + (DropB1.height / 2),
             40,
             (Color){252, 249, 234, 255});
+        DrawRectangleRec(Discard1, RED);
+        DrawText(
+            "X",
+            (Discard1.x + Discard1.width / 2) - (MeasureText("X", 50) / 2),
+            (Discard1.y + (Discard1.height / 2)) - (MeasureTextHeight("X", 50) / 2),
+            50,
+            BLACK);
+
+        if (hoverButton(Discard1) && isMouseClicked())
+        {
+            free(filePaths[inMp3]);
+            free(tmpMp3Path);
+            filePaths[inMp3] = NULL;
+            tmpMp3Path = NULL;
+            filePathCounter--;
+            inMp3 = -1;
+            isMp3 = false;
+        }
+    }
 
     DrawRectangleRec(DropB2, (Color){191, 162, 140, 255 / 2});
     if (!isLrc)
@@ -307,11 +340,34 @@ enum OPT DrawPlay()
             DropB2.y + (DropB2.height / 2),
             40,
             (Color){252, 249, 234, 255});
+        DrawRectangleRec(Discard2, RED);
+        DrawText(
+            "X",
+            (Discard2.x + Discard2.width / 2) - (MeasureText("X", 50) / 2),
+            (Discard2.y + (Discard2.height / 2)) - (MeasureTextHeight("X", 50) / 2),
+            50,
+            BLACK);
+
+        if (hoverButton(Discard2) && isMouseClicked())
+        {
+            free(filePaths[inLrc]);
+            free(tmpLrcPath);
+            filePaths[inLrc] = NULL;
+            tmpLrcPath = NULL;
+            filePathCounter--;
+            inLrc = -1;
+            inLrc = false;
+        }
     }
+
+    if ((hoverButton(DropB1) || hoverButton(DropB2)) && !hoverButton(Discard1) && !hoverButton(Discard2))
+        DropBoxHovered = 1;
+    else
+        DropBoxHovered = 0;
 
     if (enter == true)
     {
-        if (filePathCounter < 2 && (hoverButton(DropB1) || hoverButton(DropB2)) && isMouseClicked())
+        if (filePathCounter < 2 && DropBoxHovered && isMouseClicked())
         {
             char *tmpFilePaths = NULL;
             if (filePathCounter == 1)
@@ -341,6 +397,8 @@ enum OPT DrawPlay()
                             else
                             {
                                 isMp3 = 1;
+                                inMp3 = 0;
+                                inLrc = 1;
                             }
                             filePathCounter++;
                         }
@@ -423,6 +481,8 @@ enum OPT DrawPlay()
                             else
                             {
                                 isMp3 = 1;
+                                inMp3 = 0;
+                                inLrc = 1;
                             }
                             filePathCounter++;
                         }
