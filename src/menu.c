@@ -151,6 +151,8 @@ enum OPT DrawPlay()
                         else
                         {
                             isMp3 = 1;
+                            inMp3 = 0;
+                            inLrc = 1;
                         }
                         filePathCounter++;
                         TraceLog(LOG_INFO, "%s", currentPath);
