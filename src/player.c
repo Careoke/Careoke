@@ -75,6 +75,15 @@ bool Player(char *musicDir, char *lrcDir)
             DrawText(
                 TextFormat(
                     "%s",
+                    tokens[ti - 2].lyric),
+                (GetScreenWidth() / 2) - ((MeasureText(tokens[ti - 2].lyric, 17)) / 2),
+                (GetScreenHeight() / 2) - 200,
+                17, BLACK);
+
+        if (ti >= 1)
+            DrawText(
+                TextFormat(
+                    "%s",
                     tokens[ti - 1].lyric),
                 (GetScreenWidth() / 2) - ((MeasureText(tokens[ti - 1].lyric, 25)) / 2),
                 (GetScreenHeight() / 2) - 100,
@@ -88,7 +97,7 @@ bool Player(char *musicDir, char *lrcDir)
             GetScreenHeight() / 2,
             50, BLACK);
 
-        if (ti < count - 1)
+        if (ti <= count - 1)
             DrawText(
                 TextFormat(
                     "%s",
@@ -96,6 +105,15 @@ bool Player(char *musicDir, char *lrcDir)
                 (GetScreenWidth() / 2) - ((MeasureText(tokens[ti + 1].lyric, 25)) / 2),
                 (GetScreenHeight() / 2) + 100,
                 25, BLACK);
+
+        if (ti < count - 2)
+            DrawText(
+                TextFormat(
+                    "%s",
+                    tokens[ti + 2].lyric),
+                (GetScreenWidth() / 2) - ((MeasureText(tokens[ti + 2].lyric, 17)) / 2),
+                (GetScreenHeight() / 2) + 200,
+                17, BLACK);
 
         if (mode == PAUSED)
         {
