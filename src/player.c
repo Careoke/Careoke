@@ -50,12 +50,17 @@ bool Player(char *musicDir, char *lrcDir)
             else
             {
                 mode = PLAYING;
-                PlayMusicStream(mus);
+                ResumeMusicStream(mus);
             }
         }
 
     if (isLoaded)
     {
+        float barWidth = GetScreenWidth() * 0.55f;
+        float barHeight = GetScreenHeight() * 0.03f;
+        float barX = (GetScreenWidth() - barWidth) / 2;
+        float barY = GetScreenHeight() - (GetScreenHeight() * 0.15f);
+
         DrawRectangle(30, 30, 20, 60, BLACK);
         DrawRectangle(30 + 30 + 5, 30, 20, 60, BLACK);
         DrawRectangleRec(PauseBound, (Color){0});
@@ -114,6 +119,36 @@ bool Player(char *musicDir, char *lrcDir)
                 (GetScreenWidth() / 2) - ((MeasureText(tokens[ti + 2].lyric, 17)) / 2),
                 (GetScreenHeight() / 2) + 200,
                 17, BLACK);
+
+        DrawRectangle(
+            barX,
+            barY,
+            barWidth,
+            barHeight,
+            (Color){154, 134, 120, 255});
+
+        DrawRectangle(
+            barX,
+            barY,
+            (GetMusicTimePlayed(mus) / GetMusicTimeLength(mus)) * barWidth,
+            barHeight,
+            (Color){253, 255, 174, 255});
+
+        for (int i = 0; i < count; i++)
+        {
+            if (tokens[i].time > GetMusicTimePlayed(mus))
+            {
+                float lyricProgress = tokens[i].time / GetMusicTimeLength(mus);
+                float markerX = barX + lyricProgress * barWidth;
+
+                DrawRectangle(
+                    markerX,
+                    barY,
+                    2,
+                    barHeight,
+                    (Color){75, 64, 56, 255});
+            }
+        }
 
         if (mode == PAUSED)
         {
@@ -198,7 +233,7 @@ bool Player(char *musicDir, char *lrcDir)
                     if (hoverButton(Play) && isMouseClicked())
                     {
                         mode = PLAYING;
-                        PlayMusicStream(mus);
+                        ResumeMusicStream(mus);
                     }
                     if (hoverButton(Setting) && isMouseClicked())
                         showWindow = !(showWindow);
