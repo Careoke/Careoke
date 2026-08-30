@@ -2,6 +2,7 @@
 
 bool seal = 1;
 bool showWindow = 0;
+bool showStartMusic = 0;
 Rectangle Play = {0, 0, 400, 75};
 Rectangle Setting = {0, 0, 400, 75};
 Rectangle pExit = {0, 0, 400, 75};
@@ -27,6 +28,7 @@ bool Player(char *musicDir, char *lrcDir)
     static int count = 0;
     static Token tokens[MAX_LINES];
     static bool isLoaded = 0;
+    static int padding = 100;
 
     if (seal == 1 && !isLoaded)
     {
@@ -53,6 +55,10 @@ bool Player(char *musicDir, char *lrcDir)
                 ResumeMusicStream(mus);
             }
         }
+    if (tokens[0].time >= 3.0f)
+        showStartMusic = 1;
+    if (GetMusicTimePlayed(mus) >= tokens[0].time)
+        showStartMusic = 0;
 
     if (isLoaded)
     {
@@ -76,14 +82,28 @@ bool Player(char *musicDir, char *lrcDir)
                 ti++;
         }
 
+        if (showStartMusic)
+        {
+            padding = 200;
+            DrawText(
+                "Music...",
+                (GetScreenWidth() / 2) - ((MeasureText("Music...", 60)) / 2),
+                (GetScreenHeight() / 2),
+                60, BLACK);
+        }
+        else
+        {
+            padding = 100;
+        }
+
         if (ti > 0)
             DrawText(
                 TextFormat(
                     "%s",
                     tokens[ti - 2].lyric),
-                (GetScreenWidth() / 2) - ((MeasureText(tokens[ti - 2].lyric, 17)) / 2),
-                (GetScreenHeight() / 2) - 200,
-                17, BLACK);
+                (GetScreenWidth() / 2) - ((MeasureText(tokens[ti - 2].lyric, 25)) / 2),
+                (GetScreenHeight() / 2) - padding * 2,
+                25, BLACK);
 
         if (ti >= 1)
             DrawText(
@@ -91,33 +111,42 @@ bool Player(char *musicDir, char *lrcDir)
                     "%s",
                     tokens[ti - 1].lyric),
                 (GetScreenWidth() / 2) - ((MeasureText(tokens[ti - 1].lyric, 25)) / 2),
-                (GetScreenHeight() / 2) - 100,
+                (GetScreenHeight() / 2) - padding,
                 25, BLACK);
 
-        DrawText(
-            TextFormat(
-                "%s",
-                tokens[ti].lyric),
-            (GetScreenWidth() / 2) - ((MeasureText(tokens[ti].lyric, 50)) / 2),
-            GetScreenHeight() / 2,
-            50, BLACK);
+        if (showStartMusic)
+            DrawText(
+                TextFormat(
+                    "%s",
+                    tokens[ti].lyric),
+                (GetScreenWidth() / 2) - ((MeasureText(tokens[ti].lyric, 25)) / 2),
+                ((GetScreenHeight() / 2) - 100) + padding * 2,
+                26, BLACK);
+        else
+            DrawText(
+                TextFormat(
+                    "%s",
+                    tokens[ti].lyric),
+                (GetScreenWidth() / 2) - ((MeasureText(tokens[ti].lyric, 50)) / 2),
+                ((GetScreenHeight() / 2) - 100) + padding,
+                50, BLACK);
 
-        if (ti <= count - 1)
+        if (ti <= count - 1 && !showStartMusic)
             DrawText(
                 TextFormat(
                     "%s",
                     tokens[ti + 1].lyric),
                 (GetScreenWidth() / 2) - ((MeasureText(tokens[ti + 1].lyric, 25)) / 2),
-                (GetScreenHeight() / 2) + 100,
+                (GetScreenHeight() / 2) + padding,
                 25, BLACK);
 
-        if (ti < count - 2)
+        if (ti < count - 2 && !showStartMusic)
             DrawText(
                 TextFormat(
                     "%s",
                     tokens[ti + 2].lyric),
                 (GetScreenWidth() / 2) - ((MeasureText(tokens[ti + 2].lyric, 17)) / 2),
-                (GetScreenHeight() / 2) + 200,
+                (GetScreenHeight() / 2) + padding * 2,
                 17, BLACK);
 
         DrawRectangle(
