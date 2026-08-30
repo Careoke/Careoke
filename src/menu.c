@@ -358,7 +358,7 @@ enum OPT DrawPlay()
             tmpLrcPath = NULL;
             filePathCounter--;
             inLrc = -1;
-            inLrc = false;
+            isLrc = false;
         }
     }
 
