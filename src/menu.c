@@ -16,11 +16,14 @@ Rectangle Subwindow = {0};
 Rectangle ExitWindow = {0};
 Rectangle ExitButton1 = {0};
 Rectangle ExitButton2 = {0};
+Rectangle ButContinue = {0};
 
 Card raylib = {0};
 Card libtinyfiledialogs = {0};
 Card Colorhunt = {0};
 Card j1gggs = {0};
+
+Color ColCont = {18, 84, 79, 255};
 
 Image tmp_tRay = {0};
 Image tmp_tLibtinyfiledialogs = {0};
@@ -45,6 +48,7 @@ const char *filters[] = {"*.mp3", "*.lrc"};
 bool enter = false;
 bool showExit = false;
 bool DropBoxHovered = 0;
+bool showContinue = 0;
 
 bool isMp3 = 0;
 bool isLrc = 0;
@@ -169,7 +173,8 @@ enum OPT DrawPlay()
 
     if (mode == NOT)
         if (isLrc && isMp3 && filePathCounter == 2)
-            mode = PLAYING;
+            showContinue = 1;
+    // mode = PLAYING;
     if (filePathCounter == 0)
     {
         inMp3 = -1;
@@ -178,10 +183,16 @@ enum OPT DrawPlay()
         isMp3 = 0;
     }
 
+    if (filePathCounter < 2)
+        showContinue = 0;
+
     DropB1.x = 0 + 60;
     DropB1.y = ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)) + 100;
     DropB1.width = (GetScreenWidth() - 180) / 2;
-    DropB1.height = (GetScreenHeight() - DropB1.y) - 50;
+    if (!showContinue)
+        DropB1.height = (GetScreenHeight() - DropB1.y) - 50;
+    else
+        DropB1.height = (GetScreenHeight() - DropB1.y) - 250;
     Discard1.width = 70;
     Discard1.height = 70;
     Discard1.x = DropB1.x + DropB1.width - Discard1.width - 7;
@@ -189,7 +200,10 @@ enum OPT DrawPlay()
     DropB2.x = 60 + DropB1.width + 60;
     DropB2.y = DropB1.y;
     DropB2.width = (GetScreenWidth() - 180) / 2;
-    DropB2.height = (GetScreenHeight() - DropB1.y) - 50;
+    if (!showContinue)
+        DropB2.height = (GetScreenHeight() - DropB1.y) - 50;
+    else
+        DropB2.height = (GetScreenHeight() - DropB1.y) - 250;
     Discard2.width = 70;
     Discard2.height = 70;
     Discard2.x = DropB2.x + DropB2.width - Discard2.width - 7;
@@ -200,6 +214,10 @@ enum OPT DrawPlay()
     UrlBox.height = 40;
     close.x = (GetScreenWidth() - GetScreenWidth() * 0.1f) + 50;
     close.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.1f) / 2)) + 50;
+    ButContinue.x = DropB1.x;
+    ButContinue.width = DropB1.width + DropB2.width + 60;
+    ButContinue.height = 100;
+    ButContinue.y = DropB1.y + DropB1.height + (250 / 2 - ButContinue.height / 2);
 
     if (inMp3 != -1 && filePaths[inMp3] && tmpMp3Path == NULL)
     {
@@ -362,6 +380,28 @@ enum OPT DrawPlay()
         }
     }
 
+    if (showContinue)
+    {
+        if (hoverButton(ButContinue))
+        {
+            ColCont.a = 255 / 2;
+            DrawRectangleRec(ButContinue, ColCont);
+        }
+        else
+        {
+            ColCont.a = 255;
+            DrawRectangleRec(ButContinue, ColCont);
+        }
+        DrawText(
+            "PLAY",
+            ButContinue.x + ((ButContinue.width / 2) - (MeasureText("PLAY", 50) / 2)),
+            ButContinue.y + (ButContinue.height / 2) - (MeasureTextHeight("PLAY", 50) / 2),
+            50,
+            (Color){139, 187, 146, 255});
+        if (hoverButton(ButContinue) && isMouseClicked())
+            mode = PLAYING;
+    }
+
     if ((hoverButton(DropB1) || hoverButton(DropB2)) && !hoverButton(Discard1) && !hoverButton(Discard2))
         DropBoxHovered = 1;
     else
@@ -498,7 +538,7 @@ enum OPT DrawPlay()
 
     if (errTime > 0)
     {
-        ShowMessage("Please Insert a Valid file/ file format", 40, CENTER, RED, 20);
+        ShowMessage("Please Insert a Valid file / file format", 40, CENTER, RED, 20);
         errTime -= GetFrameTime();
     }
 
