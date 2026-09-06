@@ -1,0 +1,211 @@
+name: Careoke Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: "Version (example: 1.0.0)"
+        required: true
+        type: string
+
+      type:
+        description: "Release type"
+        required: true
+        type: choice
+        options:
+          - Stable
+          - Beta
+          - Alpha
+
+      commits:
+        description: "Number of previous commits to include"
+        required: true
+        type: number
+
+permissions:
+  contents: write
+
+jobs:
+
+  windows:
+    name: Build Windows
+    runs-on: windows-latest
+
+    steps:
+
+      - name: Checkout Careoke
+        uses: actions/checkout@v4
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            make
+            mingw-w64-x86_64-gcc
+            python
+
+      - name: Checkout latest raylib
+        shell: msys2 {0}
+        run: |
+          git clone https://github.com/raysan5/raylib.git raylib
+
+      - name: Build raylib
+        working-directory: raylib/src
+        shell: msys2 {0}
+        run: |
+          make PLATFORM=PLATFORM_DESKTOP RAYLIB_LIBTYPE=STATIC
+
+      - name: Copy raylib
+        shell: msys2 {0}
+        run: |
+          mkdir -p headers
+          mkdir -p out/lib
+
+          cp raylib/src/raylib.h headers/
+          cp raylib/src/raymath.h headers/
+          cp raylib/src/rlgl.h headers/
+          cp raylib/src/libraylib.a out/lib/
+
+      - name: Build Careoke
+        shell: msys2 {0}
+        run: |
+          make release
+
+      - name: Move Windows executable
+        shell: pwsh
+        run: |
+          Move-Item `
+            "out/game.exe" `
+            "Careoke-${{ inputs.version }}-${{ inputs.type }}-Windows.exe"
+
+      - name: Upload Windows build
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-build
+          path: Careoke-${{ inputs.version }}-${{ inputs.type }}-Windows.exe
+
+  linux:
+    name: Build Linux
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout Careoke
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+
+          sudo apt install -y \
+            build-essential \
+            python-is-python3 \
+            libgl1-mesa-dev \
+            libx11-dev \
+            libxcursor-dev \
+            libxinerama-dev \
+            libxrandr-dev \
+            libxi-dev \
+            libxxf86vm-dev
+
+      - name: Checkout latest raylib
+        run: |
+          git clone https://github.com/raysan5/raylib.git raylib
+
+      - name: Build raylib
+        working-directory: raylib/src
+        run: |
+          make PLATFORM=PLATFORM_DESKTOP RAYLIB_LIBTYPE=STATIC
+
+      - name: Copy raylib
+        run: |
+          mkdir -p headers
+          mkdir -p out/lib
+
+          cp raylib/src/raylib.h headers/
+          cp raylib/src/raymath.h headers/
+          cp raylib/src/rlgl.h headers/
+          cp raylib/src/libraylib.a out/lib/
+
+      - name: Build Careoke
+        run: |
+          make release
+
+      - name: Rename Linux executable
+        run: |
+          mv out/game \
+            "Careoke-${{ inputs.version }}-${{ inputs.type }}-Linux"
+
+      - name: Upload Linux build
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-build
+          path: Careoke-${{ inputs.version }}-${{ inputs.type }}-Linux
+
+  release:
+    name: Publish GitHub Release
+
+    needs:
+      - windows
+      - linux
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Download Windows build
+        uses: actions/download-artifact@v4
+        with:
+          name: windows-build
+
+      - name: Download Linux build
+        uses: actions/download-artifact@v4
+        with:
+          name: linux-build
+
+      - name: Generate release notes
+        shell: bash
+        run: |
+          echo "## Careoke ${{ inputs.version }}" > release-notes.md
+          echo "" >> release-notes.md
+
+          echo "**Type:** ${{ inputs.type }}" >> release-notes.md
+          echo "" >> release-notes.md
+
+          echo "### Changes" >> release-notes.md
+          echo "" >> release-notes.md
+
+          git log \
+            -n ${{ inputs.commits }} \
+            --pretty=format:'- `%h` %s' \
+            >> release-notes.md
+
+          echo "" >> release-notes.md
+          echo "" >> release-notes.md
+
+          echo "### Downloads" >> release-notes.md
+          echo "" >> release-notes.md
+
+          echo "- Windows" >> release-notes.md
+          echo "- Linux" >> release-notes.md
+
+      - name: Publish GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          tag_name: v${{ inputs.version }}
+          name: Careoke ${{ inputs.version }} (${{ inputs.type }})
+          body_path: release-notes.md
+
+          files: |
+            Careoke-${{ inputs.version }}-${{ inputs.type }}-Windows.exe
+            Careoke-${{ inputs.version }}-${{ inputs.type }}-Linux
+
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
