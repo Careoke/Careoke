@@ -20,12 +20,21 @@ $(TARGET): $(OBJ) | out
 debug: clean
 	$(MAKE) CFLAGS="$(CFLAGS) -DDEBUG -g -O0" PFLAGS= $(TARGET)
 
+ifeq ($(OS),Windows_NT) 
 build: clean assets
 	$(MAKE) CFLAGS="$(CFLAGS)" PFLAGS=-mwindows $(TARGET)
 
 # for github action
 release: assets
 	$(MAKE) CFLAGS="$(CFLAGS) -DRELEASE" PFLAGS=-mwindows LDFLAGS="$(R_LDFLAGS)" $(TARGET)
+else
+build: clean assets
+	$(MAKE) CFLAGS="$(CFLAGS)" PFLAGS= $(TARGET)
+
+# for github action
+release: assets
+	$(MAKE) CFLAGS="$(CFLAGS) -DRELEASE" PFLAGS= LDFLAGS="$(R_LDFLAGS)" $(TARGET)
+endif
 
 assets: out/utils
 	python src/bin2c.py
