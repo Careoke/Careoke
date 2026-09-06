@@ -3,7 +3,11 @@
 
 #include <stdbool.h>
 #include <stdio.h>
+#ifdef RELEASE
+#include "../headers/raylib.h"
+#else
 #include <raylib.h>
+#endif // RELEASE
 #include "../headers/menu.h"
 /**
  * @brief a enum that holds postions to show a dialouge

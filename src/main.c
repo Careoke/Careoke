@@ -1,6 +1,9 @@
 #include "../headers/menu.h"
 #include "../headers/utility.h"
 #include "../headers/player.h"
+#ifndef DEBUG
+#include "../headers/binSource.h"
+#endif // !DEBUG
 
 int main()
 {
@@ -9,11 +12,19 @@ int main()
     InitWindow(GetScreenWidth(), 720, "Careoke");
     ToggleBorderlessWindowed();
     InitAudioDevice();
-    tmp_tRay = LoadImage("utils/images/raylib.png");
+#ifdef DEBUG
+    tmp_tRay = LoadImage("utils/images/logo_raylib.png");
     tmp_tLibtinyfiledialogs = LoadImage("utils/images/libtinyfiledialogs.png");
     tmp_tColorhunt = LoadImage("utils/images/colorhunt.png");
     tmp_tJ1gggs = LoadImage("utils/images/j1gggs.png");
     Music bg = LoadMusicStream("utils/audio/bg-from-yt.mp3");
+#else
+    tmp_tRay = LoadImageFromMemory(".png", logo_raylib, logo_raylib_size);
+    tmp_tLibtinyfiledialogs = LoadImageFromMemory(".png", libtinyfiledialogs, libtinyfiledialogs_size);
+    tmp_tColorhunt = LoadImageFromMemory(".png", colorhunt, colorhunt_size);
+    tmp_tJ1gggs = LoadImageFromMemory(".png", j1gggs, j1gggs_size);
+    Music bg = LoadMusicStreamFromMemory(".mp3", bg_from_yt, bg_from_yt_size);
+#endif
 
     PlayMusicStream(bg);
     while (1)
