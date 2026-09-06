@@ -41,11 +41,19 @@ out/obj/%.o: src/%.c | out/obj
 out:
 	-mkdir out
 
+ifeq ($(OS),Windows_NT)
 out/obj: out
 	-mkdir out\obj
 
 out/utils: out
 	-mkdir out\utils
+else
+out/obj: out
+	mkdir -p out/obj
+
+out/utils: out
+	mkdir -p out/utils
+endif
 
 ifeq ($(OS),Windows_NT)
 clean:
