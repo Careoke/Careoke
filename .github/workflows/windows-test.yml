@@ -1,0 +1,56 @@
+name: Windows Build
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Careoke
+        uses: actions/checkout@v4
+        with:
+          path: Careoke
+
+      - name: Checkout latest raylib
+        uses: actions/checkout@v4
+        with:
+          repository: raysan5/raylib
+          path: raylib
+
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          update: true
+          install: >-
+            make
+            mingw-w64-x86_64-gcc
+
+      - name: Build raylib
+        shell: msys2 {0}
+        working-directory: raylib/src
+        run: |
+          make PLATFORM=PLATFORM_DESKTOP RAYLIB_LIBTYPE=STATIC
+
+      - name: Copy raylib
+        shell: msys2 {0}
+        run: |
+          mkdir -p Careoke/headers
+          mkdir -p Careoke/out/lib
+
+          cp raylib/src/raylib.h Careoke/headers/
+          cp raylib/src/raymath.h Careoke/headers/
+          cp raylib/src/rlgl.h Careoke/headers/
+          cp raylib/src/libraylib.a Careoke/out/lib/
+
+      - name: Build Careoke
+        shell: msys2 {0}
+        working-directory: Careoke
+        run: |
+          make release
