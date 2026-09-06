@@ -1,0 +1,53 @@
+name: Linux Build
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Careoke
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt install -y \
+            build-essential \
+            python-is-python3 \
+            libgl1-mesa-dev \
+            libx11-dev \
+            libxcursor-dev \
+            libxinerama-dev \
+            libxrandr-dev \
+            libxi-dev \
+            libxxf86vm-dev
+
+      - name: Install raylib
+        run: |
+          git clone https://github.com/raysan5/raylib.git raylib
+
+      - name: Build raylib
+        working-directory: raylib/src
+        run: |
+          make PLATFORM=PLATFORM_DESKTOP RAYLIB_LIBTYPE=STATIC
+
+      - name: Copy raylib
+        run: |
+          mkdir -p headers
+          mkdir -p out/lib
+
+          cp raylib/src/raylib.h headers/
+          cp raylib/src/raymath.h headers/
+          cp raylib/src/rlgl.h headers/
+          cp raylib/src/libraylib.a out/lib/
+
+      - name: Build Careoke
+        run: |
+          make release
