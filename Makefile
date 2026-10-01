@@ -47,8 +47,13 @@ out/obj/%.o: src/%.c | out/obj
 	$(CC) $(CFLAGS) -c $< -o $@
 	
 
+ifeq ($(OS),Windows_NT)
 out:
 	-mkdir out
+else
+out:
+	mkdir -p out
+endif
 
 ifeq ($(OS),Windows_NT)
 out/obj: out
