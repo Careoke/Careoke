@@ -7,6 +7,11 @@ int main()
 {
     Deck cards = {0};
     Settings sett = {0};
+    if (ValidateOke(EXAMPLE))
+    {
+        printf("Invalid file detected\n");
+        return 1;
+    }
     ReadOKEData(EXAMPLE, &cards, &sett);
 
     printf("card amount: %d\n", cards.count);

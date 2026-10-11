@@ -7,6 +7,7 @@
 ! ^ these are section, unknow section will be ignored
 ! section starts with \0\ and ends with \1\
 ! parameter - value
+        !meow_sound - 10.00
         master_sound - 10.00
         background_sound - 10.00
         background_color - ffffff

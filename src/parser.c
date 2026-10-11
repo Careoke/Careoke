@@ -63,6 +63,125 @@ char *ReadFileStream(FILE *f, int spacing)
     return buffer;
 }
 
+int ValidateOke(char *dir)
+{
+    FILE *f = fopen(dir, "r");
+    if (!f)
+    {
+        perror("fopen");
+        return 1;
+    }
+    char *Signature = ReadFileStream(f, 1);
+    if (strcmp(Signature, FILE_SIGNATURE) != 0)
+    {
+        printf("Invalid file type\n");
+        free(Signature);
+        return 1;
+    }
+    else
+    {
+        free(Signature);
+        char *Line;
+        char *key = {0};
+        char *value = {0};
+        char *separator = {0};
+        for (;;)
+        {
+            Line = ReadFileStream(f, 1);
+
+            if (!Line)
+                break;
+
+            if (Line[0] == '!')
+            {
+                free(Line);
+                continue;
+            }
+
+            if (strncmp(Line, "[settings]", 10) == 0)
+            {
+                for (;;)
+                {
+                    free(Line);
+                    Line = ReadFileStream(f, 1);
+                    if (!Line)
+                        break;
+                    if (Line[0] == '!')
+                        continue;
+                    if (strcmp(Line, "\\1\\") == 0)
+                        break;
+
+                    if (strncmp(Line, "[card]", 6) == 0)
+                    {
+                        free(Line);
+                        fclose(f);
+                        return 1; // no end
+                    }
+
+                    // key - value
+                    separator = strstr(Line, " - ");
+                    if (separator)
+                    {
+                        *separator = '\0';
+                        key = Line;
+                        if (strcmp(key, "master_sound") != 0 &&
+                            strcmp(key, "background_sound") != 0 &&
+                            strcmp(key, "background_color") != 0 &&
+                            strcmp(key, "default_config") != 0)
+                        {
+                            free(Line);
+                            fclose(f);
+                            return 1;
+                        }
+                    }
+                }
+                free(Line);
+                continue;
+            }
+            if (strncmp(Line, "[card]", 6) == 0)
+            {
+                for (;;)
+                {
+                    free(Line);
+                    Line = ReadFileStream(f, 1);
+                    if (!Line)
+                        break;
+                    if (Line[0] == '!')
+                        continue;
+                    if (strcmp(Line, "\\1\\") == 0)
+                        break;
+                    if (strncmp(Line, "[DONE]", 6) == 0)
+                    {
+                        free(Line);
+                        fclose(f);
+                        return 1; // no end
+                    }
+
+                    if (strcmp(Line, "(card) /0I") == 0)
+                    {
+                        free(Line);
+                        for (int i = 0; i < 6; i++)
+                        {
+                            Line = ReadFileStream(f, 1);
+                            free(Line);
+                        }
+                        Line = ReadFileStream(f, 1); // /0K
+                        if (strcmp(Line, "/0K"))
+                        {
+                            free(Line);
+                            fclose(f);
+                            return 1;
+                        }
+                        free(Line);
+                    }
+                }
+            }
+        }
+    }
+    fclose(f);
+    return 0;
+}
+
 int ReadOKEData(char *dir, Deck *cards, Settings *sets)
 {
     FILE *f = fopen(dir, "r");
