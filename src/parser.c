@@ -69,6 +69,7 @@ int ValidateOke(char *dir)
     if (!f)
     {
         perror("fopen");
+        fclose(f);
         return 1;
     }
     char *Signature = ReadFileStream(f, 1);
@@ -188,6 +189,7 @@ int ReadOKEData(char *dir, Deck *cards, Settings *sets)
     if (!f)
     {
         perror("fopen");
+        fclose(f);
         return 1;
     }
     int index = 0;
@@ -196,10 +198,11 @@ int ReadOKEData(char *dir, Deck *cards, Settings *sets)
     char *value = {0};
     char *separator = {0};
     char *Signature = ReadFileStream(f, 1);
-    if (strcmp(Signature, FILE_SIGNATURE) != 0)
+    if ((strcmp(Signature, FILE_SIGNATURE) != 0) || (!Signature))
     {
         printf("Invalid file type\n");
         free(Signature);
+        fclose(f);
         return 1;
     }
     else
@@ -214,6 +217,7 @@ int ReadOKEData(char *dir, Deck *cards, Settings *sets)
             if (Line[0] == '!')
             {
                 free(Line);
+                fclose(f);
                 continue;
             }
 
@@ -316,6 +320,12 @@ int SetSettingData(char *dir, SettingType type, char *val)
 {
     FILE *f = fopen(dir, "r");
     FILE *f2 = fopen("tmp.liboke", "w");
+    if (!f || !f2)
+    {
+        fclose(f);
+        fclose(f2);
+        return 1;
+    }
 
     char *key = {0};
     char *value = {0};
@@ -354,6 +364,7 @@ int SetSettingData(char *dir, SettingType type, char *val)
         {
             fprintf(f2, "%s\n", Line);
             free(Line);
+            fclose(f);
             continue;
         }
 
@@ -427,6 +438,15 @@ int SetSettingData(char *dir, SettingType type, char *val)
                             sprintf(door, "        default_config - %s\n", val);
                             break;
                         }
+                        default:
+                        {
+                            printf("Invalid Key");
+                            fclose(f);
+                            free(door);
+                            free(tmpLine);
+                            free(Line);
+                            return 1;
+                        }
                         }
                         fprintf(f2, "%s", door);
                         free(door);
@@ -464,6 +484,12 @@ int SetCardData(char *dir, Cardtype type, int cardIndex, char *val)
 {
     FILE *f = fopen(dir, "r");
     FILE *f2 = fopen("tmp.liboke", "w");
+    if (!f || !f2)
+    {
+        fclose(f);
+        fclose(f2);
+        return 1;
+    }
 
     char *Line = {0};
     int index = 0;
@@ -600,6 +626,12 @@ int AddNewCard(char *dir, MusicTrack NewCard)
 {
     FILE *f = fopen(dir, "r");
     FILE *f2 = fopen("tmp.liboke", "w");
+    if (!f || !f2)
+    {
+        fclose(f);
+        fclose(f2);
+        return 1;
+    }
     char *Line = {0};
     int index = 0;
 
@@ -685,6 +717,12 @@ int RemoveCard(char *dir, int cardIndex)
 {
     FILE *f = fopen(dir, "r");
     FILE *f2 = fopen("tmp.liboke", "w");
+    if (!f || !f2)
+    {
+        fclose(f);
+        fclose(f2);
+        return 1;
+    }
 
     char *Line = {0};
     int index = 0;
