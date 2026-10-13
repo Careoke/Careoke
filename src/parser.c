@@ -38,7 +38,10 @@ char *ReadFileStream(FILE *f, int spacing)
         if (c == EOF)
         {
             if (size == 0)
+            {
+                free(buffer);
                 return NULL;
+            }
             break;
         }
 
@@ -76,6 +79,7 @@ int ValidateOke(char *dir)
     {
         printf("Invalid file type\n");
         free(Signature);
+        fclose(f);
         return 1;
     }
     else
@@ -315,7 +319,18 @@ int ReadOKEData(char *dir, Deck *cards, Settings *sets)
 int SetSettingData(char *dir, SettingType type, char *val)
 {
     FILE *f = fopen(dir, "r");
+    if (!f)
+    {
+        perror("fopen");
+        return 1;
+    }
     FILE *f2 = fopen("tmp.liboke", "w");
+    if (!f2)
+    {
+        fclose(f);
+        perror("fopen");
+        return 1;
+    }
 
     char *key = {0};
     char *value = {0};
@@ -340,6 +355,10 @@ int SetSettingData(char *dir, SettingType type, char *val)
     case SETTING_DEFAULT_CONFIG:
         target = malloc(strlen("default_config") + 1);
         strcpy(target, "default_config");
+        break;
+    default:
+        fprintf(stderr, "Invalid setting type: %d\n", type);
+        return 1;
         break;
     }
 
@@ -463,7 +482,18 @@ int SetSettingData(char *dir, SettingType type, char *val)
 int SetCardData(char *dir, Cardtype type, int cardIndex, char *val)
 {
     FILE *f = fopen(dir, "r");
+    if (!f)
+    {
+        perror("fopen");
+        return 1;
+    }
     FILE *f2 = fopen("tmp.liboke", "w");
+    if (!f2)
+    {
+        fclose(f);
+        perror("fopen");
+        return 1;
+    }
 
     char *Line = {0};
     int index = 0;
@@ -492,6 +522,9 @@ int SetCardData(char *dir, Cardtype type, int cardIndex, char *val)
 
     case CARD_MP3_PATH:
         call = 5;
+        break;
+    default:
+        fprintf(stderr, "In Valid type: %d", type);
         break;
     }
 
