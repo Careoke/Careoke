@@ -87,7 +87,6 @@ int ValidateOke(char *dir)
         free(Signature);
         char *Line;
         char *key = {0};
-        char *value = {0};
         char *separator = {0};
         for (;;)
         {
@@ -248,6 +247,7 @@ int ReadOKEData(char *dir, Deck *cards, Settings *sets)
                         else if (strcmp(key, "background_color") == 0)
                             sets->background_color = strtoul(value, NULL, 16);
                         else if (strcmp(key, "default_config") == 0)
+                        {
                             if (strcmp(value, "=0=") == 0)
                                 sets->default_config = NULL;
                             else
@@ -255,6 +255,7 @@ int ReadOKEData(char *dir, Deck *cards, Settings *sets)
                                 sets->default_config = malloc(strlen(value) + 1);
                                 strcpy(sets->default_config, value);
                             }
+                        }
                     }
                 }
                 free(Line);
@@ -333,7 +334,6 @@ int SetSettingData(char *dir, SettingType type, char *val)
     }
 
     char *key = {0};
-    char *value = {0};
     char *Line = {0};
     char *door = {0};
     char *target = {0};
@@ -413,7 +413,6 @@ int SetSettingData(char *dir, SettingType type, char *val)
                 {
                     *separator = '\0';
                     key = tmpLine;
-                    value = separator + 3;
 
                     if (strcmp(key, target) == 0)
                     {
@@ -634,7 +633,6 @@ int AddNewCard(char *dir, MusicTrack NewCard)
     FILE *f = fopen(dir, "r");
     FILE *f2 = fopen("tmp.liboke", "w");
     char *Line = {0};
-    int index = 0;
 
     for (;;)
     {
