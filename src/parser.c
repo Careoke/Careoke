@@ -317,15 +317,15 @@ int ReadOKEData(char *dir, Deck *cards, Settings *sets)
     return 0;
 }
 
-int SetSettingData(char *dir, SettingType type, char *val)
+int SetSettingDataEx(char *Indir, char *Outdir, SettingType type, char *val)
 {
-    FILE *f = fopen(dir, "r");
+    FILE *f = fopen(Indir, "r");
     if (!f)
     {
         perror("fopen");
         return 1;
     }
-    FILE *f2 = fopen("tmp.liboke", "w");
+    FILE *f2 = fopen(Outdir, "w+");
     if (!f2)
     {
         fclose(f);
@@ -469,24 +469,33 @@ int SetSettingData(char *dir, SettingType type, char *val)
 
     free(target);
     fclose(f);
-    fclose(f2);
-    if (remove(dir) != 0)
-        perror("remove");
+    remove(Indir);
+    f = fopen(Indir, "w");
+    if (!f)
+    {
+        perror("fopen");
+        fclose(f2);
+        return 1;
+    }
+    fseek(f2, 0, SEEK_SET);
+    for (int c; (c = fgetc(f2)) != EOF;)
+        fputc(c, f);
 
-    if (rename("tmp.liboke", dir) != 0)
-        perror("rename");
+    fclose(f);
+    fclose(f2);
+    remove(Outdir);
     return 0;
 }
 
-int SetCardData(char *dir, Cardtype type, int cardIndex, char *val)
+int SetCardDataEx(char *Indir, char *Outdir, Cardtype type, int cardIndex, char *val)
 {
-    FILE *f = fopen(dir, "r");
+    FILE *f = fopen(Indir, "r");
     if (!f)
     {
         perror("fopen");
         return 1;
     }
-    FILE *f2 = fopen("tmp.liboke", "w");
+    FILE *f2 = fopen(Outdir, "w+");
     if (!f2)
     {
         fclose(f);
@@ -617,21 +626,39 @@ int SetCardData(char *dir, Cardtype type, int cardIndex, char *val)
     }
 
     fclose(f);
+    remove(Indir);
+    f = fopen(Indir, "w");
+    if (!f)
+    {
+        perror("fopen");
+        fclose(f2);
+        return 1;
+    }
+    fseek(f2, 0, SEEK_SET);
+    for (int c; (c = fgetc(f2)) != EOF;)
+        fputc(c, f);
+
+    fclose(f);
     fclose(f2);
-
-    if (remove(dir) != 0)
-        perror("remove");
-
-    if (rename("tmp.liboke", dir) != 0)
-        perror("rename");
-
+    remove(Outdir);
     return 0;
 }
 
-int AddNewCard(char *dir, MusicTrack NewCard)
+int AddNewCardEx(char *Indir, char *Outdir, MusicTrack NewCard)
 {
-    FILE *f = fopen(dir, "r");
-    FILE *f2 = fopen("tmp.liboke", "w");
+    FILE *f = fopen(Indir, "r");
+    if (!f)
+    {
+        perror("fopen");
+        return 1;
+    }
+    FILE *f2 = fopen(Outdir, "w+");
+    if (!f2)
+    {
+        fclose(f);
+        perror("fopen");
+        return 1;
+    }
     char *Line = {0};
 
     for (;;)
@@ -701,21 +728,39 @@ int AddNewCard(char *dir, MusicTrack NewCard)
     }
 
     fclose(f);
+    remove(Indir);
+    f = fopen(Indir, "w");
+    if (!f)
+    {
+        perror("fopen");
+        fclose(f2);
+        return 1;
+    }
+    fseek(f2, 0, SEEK_SET);
+    for (int c; (c = fgetc(f2)) != EOF;)
+        fputc(c, f);
+
+    fclose(f);
     fclose(f2);
-
-    if (remove(dir) != 0)
-        perror("remove");
-
-    if (rename("tmp.liboke", dir) != 0)
-        perror("rename");
-
+    remove(Outdir);
     return 0;
 }
 
-int RemoveCard(char *dir, int cardIndex)
+int RemoveCardEx(char *Indir, char *Outdir, int cardIndex)
 {
-    FILE *f = fopen(dir, "r");
-    FILE *f2 = fopen("tmp.liboke", "w");
+    FILE *f = fopen(Indir, "r");
+    if (!f)
+    {
+        perror("fopen");
+        return 1;
+    }
+    FILE *f2 = fopen(Outdir, "w+");
+    if (!f2)
+    {
+        fclose(f);
+        perror("fopen");
+        return 1;
+    }
 
     char *Line = {0};
     int index = 0;
@@ -800,13 +845,40 @@ int RemoveCard(char *dir, int cardIndex)
     }
 
     fclose(f);
+    remove(Indir);
+    f = fopen(Indir, "w");
+    if (!f)
+    {
+        perror("fopen");
+        fclose(f2);
+        return 1;
+    }
+    fseek(f2, 0, SEEK_SET);
+    for (int c; (c = fgetc(f2)) != EOF;)
+        fputc(c, f);
+
+    fclose(f);
     fclose(f2);
-
-    if (remove(dir) != 0)
-        perror("remove");
-
-    if (rename("tmp.liboke", dir) != 0)
-        perror("rename");
-
+    remove(Outdir);
     return 0;
+}
+
+int SetSettingData(char *dir, SettingType type, char *val)
+{
+    return SetSettingDataEx(dir, TMPF, type, val);
+}
+
+int SetCardData(char *dir, Cardtype type, int cardIndex, char *val)
+{
+    return SetCardDataEx(dir, TMPF, type, cardIndex, val);
+}
+
+int AddNewCard(char *dir, MusicTrack NewCard)
+{
+    return AddNewCardEx(dir, TMPF, NewCard);
+}
+
+int RemoveCard(char *dir, int cardIndex)
+{
+    return RemoveCardEx(dir, TMPF, cardIndex);
 }

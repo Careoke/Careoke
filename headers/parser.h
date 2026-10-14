@@ -3,6 +3,7 @@
 
 #define FILE_SIGNATURE "[gameliboke]"
 #define ZERO "=0="
+#define TMPF "tmp.liboke"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,6 +59,10 @@ void freeSettings(Settings sets);
 void freeLiboke(Deck deck, Settings sets);
 int ValidateOke(char *dir);
 int ReadOKEData(char *dir, Deck *cards, Settings *sets);
+int SetSettingDataEx(char *Indir, char *Outdir, SettingType type, char *val);
+int SetCardDataEx(char *Indir, char *Outdir, Cardtype type, int cardIndex, char *val);
+int AddNewCardEx(char *Indir, char *Outdir, MusicTrack NewCard);
+int RemoveCardEx(char *Indir, char *Outdir, int cardIndex);
 int SetSettingData(char *dir, SettingType type, char *val);
 int SetCardData(char *dir, Cardtype type, int cardIndex, char *val);
 int AddNewCard(char *dir, MusicTrack NewCard);
