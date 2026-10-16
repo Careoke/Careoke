@@ -177,13 +177,137 @@ int ValidateOke(char *dir);
  *
  */
 int ReadOKEData(char *dir, Deck *cards, Settings *sets);
+
+/**
+ * @brief change or set a specific value in the sets of settings
+ *
+ * @warning Indir can't be same as Outdir & need to call ReadOKEData() again to fill it in deck
+ *
+ * @var InDir the config file to change
+ *
+ * @var Outdir the temporary file where the value will be change and later get deleted
+ *
+ * @var type settings type to change
+ *
+ * @var val the value to replace it
+ *
+ * @returns Returns 1 if anything goes wrong
+ *
+ */
 int SetSettingDataEx(char *Indir, char *Outdir, SettingType type, char *val);
+
+/**
+ * @brief change or set a specific value in a specifc index of card
+ *
+ * @warning Indir can't be same as Outdir & need to call ReadOKEData() again to fill it in deck
+ *
+ * @var InDir the config file to change
+ *
+ * @var Outdir the temporary file where the value will be change and later get deleted
+ *
+ * @var type settings type to change
+ *
+ * @var cardIndex the index of card to change
+ *
+ * @var val the value to replace it
+ *
+ * @returns Returns 1 if anything goes wrong
+ *
+ */
 int SetCardDataEx(char *Indir, char *Outdir, Cardtype type, int cardIndex, char *val);
+
+/**
+ * @brief Add a new card to the card list
+ *
+ * @warning Indir can't be same as Outdir & need to call ReadOKEData() again to fill it in deck
+ *
+ * @var InDir the config file to change
+ *
+ * @var Outdir the temporary file where the value will be change and later get deleted
+ *
+ * @var NewCard the card to add
+ *
+ * @returns Returns 1 if anything goes wrong
+ *
+ */
 int AddNewCardEx(char *Indir, char *Outdir, MusicTrack NewCard);
+
+/**
+ * @brief Add a new card to the card list
+ *
+ * @warning Indir can't be same as Outdir & need to call ReadOKEData() again to fill it in deck
+ *
+ * @var InDir the config file to change
+ *
+ * @var Outdir the temporary file where the value will be change and later get deleted
+ *
+ * @var cardIndex the index of card to delete
+ *
+ * @returns Returns 1 if anything goes wrong
+ *
+ */
 int RemoveCardEx(char *Indir, char *Outdir, int cardIndex);
+
+/**
+ * @brief simpler SetSettingDataEx()
+ *
+ * @warning liboke need to be in the same dir as the library
+ *
+ * @var dir the config file to change
+ *
+ * @var type the type of setting to change
+ *
+ * @var val the desired value
+ *
+ * @returns Returns 1 if anything goes wrong
+ *
+ */
 int SetSettingData(char *dir, SettingType type, char *val);
+
+/**
+ * @brief change or set a specific value in a specifc index of card
+ *
+ * @warning liboke need to be in the same dir as the library
+ *
+ * @var dir the config file to change
+ *
+ * @var type settings type to change
+ *
+ * @var cardIndex the index of card to change
+ *
+ * @var val the value to replace it
+ *
+ * @returns Returns 1 if anything goes wrong
+ *
+ */
 int SetCardData(char *dir, Cardtype type, int cardIndex, char *val);
+
+/**
+ * @brief Add a new card to the card list
+ *
+ * @warning liboke need to be in the same dir as the library
+ *
+ * @var dir the config file to change
+ *
+ * @var NewCard the card to add
+ *
+ * @returns Returns 1 if anything goes wrong
+ *
+ */
 int AddNewCard(char *dir, MusicTrack NewCard);
+
+/**
+ * @brief Add a new card to the card list
+ *
+ * @warning liboke need to be in the same dir as the library
+ *
+ * @var dir the config file to change
+ *
+ * @var cardIndex the index of card to delete
+ *
+ * @returns Returns 1 if anything goes wrong
+ *
+ */
 int RemoveCard(char *dir, int cardIndex);
 
 #endif // !PARSER_H
