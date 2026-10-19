@@ -111,13 +111,15 @@ int main()
     // }
 
     // RemoveCard(EXAMPLE, 3);
-    ResetLiboke(EXAMPLE);
+    // ResetLiboke(EXAMPLE);
 
-    freeLiboke(cards, sett);
-    cards = (Deck){0};
-    sett = (Settings){0};
-    ReadOKEData(EXAMPLE, &cards, &sett);
+    // freeLiboke(cards, sett);
+    // cards = (Deck){0};
+    // sett = (Settings){0};
+    ExportLiboke(EXAMPLE, "output.liboke", 0);
+    ReadOKEData("output.liboke", &cards, &sett);
 
+    printf("===== OUTPUT =====\n");
     printf("Master Sound:      %.2f\n", sett.master_sound);
 
     printf("Master Sound:      %.2f\n", sett.master_sound);
