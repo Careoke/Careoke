@@ -9,6 +9,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+// default liboke
+static const char DEFAULT_LIBOKE[] =
+    "[gameliboke]\n"
+    "\n"
+    "[settings] \\0\\\n"
+    "        master_sound - 100\n"
+    "        background_sound - 100\n"
+    "        background_color - =0=\n"
+    "        default_config - =0=\n"
+    "\\1\\\n"
+    "\n"
+    "[DONE]\n";
+
 /**
  * @breif a struct that holds the settings values from liboke
  *
@@ -69,7 +82,7 @@ typedef struct Deck
 /**
  * @brief a enum the holds the type of editable parameter we have in settings
  *
- *  @var SETTING_MASTER_SOUND or master_sound
+ * @var SETTING_MASTER_SOUND or master_sound
  *
  * @var SETTING_BACKGROUND_SOUND or background_sound
  *
@@ -117,7 +130,7 @@ typedef enum Cardtype
  *
  * @var spacing wether it should return a string that has spacings/ /n / /0 in it
  *
- *  @returns Returns the null terminated string buffer from the file stream
+ * @returns Returns the null terminated string buffer from the file stream
  */
 char *ReadFileStream(FILE *f, int spacing);
 
@@ -309,5 +322,27 @@ int AddNewCard(char *dir, MusicTrack NewCard);
  *
  */
 int RemoveCard(char *dir, int cardIndex);
+
+/**
+ * @brief Reset the file into the default liboke
+ *
+ * @var dir direcotry of the config file to rest
+ *
+ * @returns Returns 1 if anything goes wrong
+ */
+int ResetLiboke(char *dir);
+
+/**
+ * @brief Export the liboke to a output file
+ *
+ * @var inDir the input file
+ *
+ * @var outDir the output file
+ *
+ * @var comments 1 if you want comments 0 if you don't want
+ *
+ * @returns Returns 1 if anything goes wrong
+ */
+int ExportLiboke(char *inDir, char *outDir, int comments);
 
 #endif // !PARSER_H
