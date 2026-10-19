@@ -110,9 +110,24 @@ int main()
     //     printf("\n");
     // }
 
-    RemoveCard(EXAMPLE, 3);
+    // RemoveCard(EXAMPLE, 3);
+    ResetLiboke(EXAMPLE);
 
+    freeLiboke(cards, sett);
+    cards = (Deck){0};
+    sett = (Settings){0};
     ReadOKEData(EXAMPLE, &cards, &sett);
+
+    printf("Master Sound:      %.2f\n", sett.master_sound);
+
+    printf("Master Sound:      %.2f\n", sett.master_sound);
+    printf("Background Sound:  %.2f\n", sett.background_sound);
+    printf("Background Color:  #%06X\n", sett.background_color);
+
+    if (sett.default_config == NULL)
+        printf("Default Config:    NULL\n");
+    else
+        printf("Default Config:    %s\n", sett.default_config);
 
     printf("card amount: %d\n", cards.count);
     for (int i = 0; i < cards.count; i++)

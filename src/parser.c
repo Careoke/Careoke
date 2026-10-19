@@ -12,6 +12,7 @@ void freeDeck(Deck deck)
 {
     for (int i = 0; i < deck.count; i++)
         freeCard(deck.card[i]);
+    free(deck.card);
 }
 
 void freeSettings(Settings sets)
@@ -881,4 +882,15 @@ int AddNewCard(char *dir, MusicTrack NewCard)
 int RemoveCard(char *dir, int cardIndex)
 {
     return RemoveCardEx(dir, TMPF, cardIndex);
+}
+
+int ResetLiboke(char *dir)
+{
+    FILE *file = fopen(dir, "w");
+    if (file == NULL)
+        return 1;
+
+    fputs(DEFAULT_LIBOKE, file);
+
+    return fclose(file) == 0;
 }

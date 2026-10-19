@@ -9,6 +9,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+// default liboke
+static const char DEFAULT_LIBOKE[] =
+    "[gameliboke]\n"
+    "\n"
+    "[settings] \\0\\\n"
+    "        master_sound - 100\n"
+    "        background_sound - 100\n"
+    "        background_color - =0=\n"
+    "        default_config - =0=\n"
+    "\\1\\\n"
+    "\n"
+    "[DONE]\n";
+
 /**
  * @breif a struct that holds the settings values from liboke
  *
@@ -309,5 +322,14 @@ int AddNewCard(char *dir, MusicTrack NewCard);
  *
  */
 int RemoveCard(char *dir, int cardIndex);
+
+/**
+ * @brief Reset the file into the default liboke
+ *
+ * @var dir direcotry of the config file to rest
+ *
+ * @returns Returns 1 if anything goes wrong
+ */
+int ResetLiboke(char *dir);
 
 #endif // !PARSER_H
