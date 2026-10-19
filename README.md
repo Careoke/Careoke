@@ -11,10 +11,6 @@ Before you begin, make sure you have the following:
 - C compiler
 - [`raylib`](https://github.com/raysan5/raylib) installed
 
-### Warning
-
-- In Raylib 6.xx (and some 5.xx), it breaks the libtinyfiledialogs because of a [bug in the source](https://github.com/raysan5/raylib/issues/5854), Unless it's fixed you have cherry-pick this [commit](https://github.com/Careoke/raylib/commit/194867aa55146d4d989586e59e4a6890181e7435) and build or build using [raylib from this org](https://github.com/Careoke/raylib)
-
 ### Building
 
 #### Just run `make all` then grab the compiled output from `./out/game`
