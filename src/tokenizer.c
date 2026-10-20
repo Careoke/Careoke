@@ -3,38 +3,37 @@
 int GetLRC(char *lrcFile, Token tokens[])
 {
     FILE *f = fopen(lrcFile, "r");
+    if (!f)
+        return 0;
 
-    char line[512];
+    char *Line;
     int count = 0;
-
-    while (fgets(line, sizeof(line), f))
+    for (;;)
     {
-        int min;
-        float sec;
-        char lyric[MAX_LYRIC];
+        Line = ReadFileStream(f, 1);
 
-        if (sscanf(line, "[%d:%f]%[^\n]", &min, &sec, lyric) == 3)
+        if (!Line)
+            break;
+
+        char *buff = strstr(Line, "]");
+        if (buff)
         {
-            tokens[count].time = min * 60 + sec;
-            strcpy(tokens[count].lyric, lyric);
-            count++;
+            *buff = '\0';
+
+            int min;
+            float sec;
+
+            if (sscanf(Line, "[%d:%f]", &min, &sec) == 2)
+            {
+                tokens[count].time = min * 60 + sec;
+                strcpy(tokens[count].lyric, buff + 2);
+                count++;
+            }
         }
+
+        free(Line);
     }
 
     fclose(f);
     return count;
 }
-
-// int main()
-// {
-//     Token tokens[MAX_LINES];
-
-//     int count = GetLRC("out/lyrics.lrc", tokens);
-
-//     for (int i = 0; i < count; i++)
-//     {
-//         printf("%f -> %s\n", tokens[i].time, tokens[i].lyric);
-//     }
-
-//     return 0;
-// }

@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "../headers/parser.h"
 
 #define MAX_LYRIC 256
 #define MAX_LINES 100
