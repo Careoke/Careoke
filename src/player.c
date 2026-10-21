@@ -26,7 +26,7 @@ bool Player(char *musicDir, char *lrcDir)
     static float curTime = 0.0f;
     static int ti = 0;
     static int count = 0;
-    static Token tokens[MAX_LINES];
+    static Token *tokens = NULL;
     static bool isLoaded = 0;
     static int padding = 100;
 
@@ -34,7 +34,8 @@ bool Player(char *musicDir, char *lrcDir)
     {
         if (!IsAudioDeviceReady())
             InitAudioDevice();
-        count = GetLRC(lrcDir, tokens);
+        FreeTokens(&tokens, count);
+        count = GetLRC(lrcDir, &tokens);
         mus = LoadMusicStream(musicDir);
 
         PlayMusicStream(mus);
@@ -96,7 +97,7 @@ bool Player(char *musicDir, char *lrcDir)
             padding = 100;
         }
 
-        if (ti > 0)
+        if (ti >= 2)
             DrawText(
                 TextFormat(
                     "%s",
@@ -114,24 +115,27 @@ bool Player(char *musicDir, char *lrcDir)
                 (GetScreenHeight() / 2) - padding,
                 25, BLACK);
 
-        if (showStartMusic)
-            DrawText(
-                TextFormat(
-                    "%s",
-                    tokens[ti].lyric),
-                (GetScreenWidth() / 2) - ((MeasureText(tokens[ti].lyric, 25)) / 2),
-                ((GetScreenHeight() / 2) - 100) + padding * 2,
-                26, BLACK);
-        else
-            DrawText(
-                TextFormat(
-                    "%s",
-                    tokens[ti].lyric),
-                (GetScreenWidth() / 2) - ((MeasureText(tokens[ti].lyric, 50)) / 2),
-                ((GetScreenHeight() / 2) - 100) + padding,
-                50, BLACK);
+        if (ti >= 0 && ti < count)
+        {
+            if (showStartMusic)
+                DrawText(
+                    TextFormat(
+                        "%s",
+                        tokens[ti].lyric),
+                    (GetScreenWidth() / 2) - ((MeasureText(tokens[ti].lyric, 25)) / 2),
+                    ((GetScreenHeight() / 2) - 100) + padding * 2,
+                    26, BLACK);
+            else
+                DrawText(
+                    TextFormat(
+                        "%s",
+                        tokens[ti].lyric),
+                    (GetScreenWidth() / 2) - ((MeasureText(tokens[ti].lyric, 50)) / 2),
+                    ((GetScreenHeight() / 2) - 100) + padding,
+                    50, BLACK);
+        }
 
-        if (ti <= count - 1 && !showStartMusic)
+        if (ti + 1 < count && !showStartMusic)
             DrawText(
                 TextFormat(
                     "%s",
@@ -140,7 +144,7 @@ bool Player(char *musicDir, char *lrcDir)
                 (GetScreenHeight() / 2) + padding,
                 25, BLACK);
 
-        if (ti < count - 2 && !showStartMusic)
+        if (ti + 2 < count && !showStartMusic)
             DrawText(
                 TextFormat(
                     "%s",
@@ -277,6 +281,7 @@ bool Player(char *musicDir, char *lrcDir)
                         mode = NOT;
                         option = NONE;
                         enter = false;
+                        FreeTokens(&tokens, count);
 
                         return true;
                     }
@@ -302,6 +307,7 @@ bool Player(char *musicDir, char *lrcDir)
         mode = NOT;
         option = NONE;
         enter = false;
+        FreeTokens(&tokens, count);
         return true;
     }
     return false;

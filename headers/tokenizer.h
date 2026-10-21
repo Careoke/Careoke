@@ -6,9 +6,6 @@
 #include <string.h>
 #include "../headers/parser.h"
 
-#define MAX_LYRIC 256
-#define MAX_LINES 100
-
 /**
  * @brief a struct that holds the lrc file
  *
@@ -19,18 +16,16 @@
 typedef struct
 {
     float time;
-    char lyric[MAX_LYRIC];
+    char *lyric;
 } Token;
+
+void FreeTokens(Token **tokens, int count);
 
 /**
  * @brief Takes a *.lrc file and put the contents as Token
  *
- * @warning This function doesn't allocate memory dynamiclly
- * it hard coded as normal song lyrics doesn't go higher than 256 characters
- * or 100 lines
- *
  * @return Return the number of lyrics
  */
-int GetLRC(char *lrcFile, Token token[]);
+int GetLRC(char *lrcFile, Token **token);
 
 #endif // !TOKENIZER_H
