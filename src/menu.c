@@ -142,21 +142,17 @@ enum OPT DrawPlay()
                     else
                     {
                         int pathLen = strlen(currentPath) + 1;
-                        if (filePaths[filePathCounter] != NULL)
-                            RL_FREE(filePaths[filePathCounter]);
                         filePaths[filePathCounter] = (char *)RL_CALLOC(pathLen, sizeof(char));
                         strcpy(filePaths[filePathCounter], currentPath);
-                        if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                        if (IsFileExtension(filePaths[filePathCounter], ".mp3"))
                         {
-                            isLrc = 1;
-                            inMp3 = 1;
-                            inLrc = 0;
+                            isMp3 = true;
+                            inMp3 = filePathCounter;
                         }
                         else
                         {
-                            isMp3 = 1;
-                            inMp3 = 0;
-                            inLrc = 1;
+                            isLrc = true;
+                            inLrc = filePathCounter;
                         }
                         filePathCounter++;
                         TraceLog(LOG_INFO, "%s", currentPath);
@@ -232,7 +228,6 @@ enum OPT DrawPlay()
         }
         else
         {
-            TraceLog(LOG_INFO, "%s", filePaths[inMp3]);
             tmpMp3Path = malloc(strlen(GetFileName(filePaths[inMp3])) + 1);
             strcpy(tmpMp3Path, GetFileName(filePaths[inMp3]));
         }
@@ -240,6 +235,7 @@ enum OPT DrawPlay()
 
     if (inLrc != -1 && filePaths[inLrc] && tmpLrcPath == NULL)
     {
+        TraceLog(LOG_INFO, "%s", filePaths[inLrc]);
         if (DropB1.width <= MeasureText(GetFileName(filePaths[inLrc]), 40))
         {
             size_t size_tmpLrcPath = ((DropB1.width - MeasureText("...", 40)) / 40);
@@ -311,11 +307,18 @@ enum OPT DrawPlay()
 
         if (hoverButton(Discard1) && isMouseClicked())
         {
+            TraceLog(LOG_INFO, "CAREOKE: FREE %s", filePaths[inMp3]);
             free(filePaths[inMp3]);
-            free(tmpMp3Path);
             filePaths[inMp3] = NULL;
+            free(tmpMp3Path);
             tmpMp3Path = NULL;
             filePathCounter--;
+            if (inLrc != -1 && inLrc > inMp3)
+            {
+                filePaths[inLrc - 1] = filePaths[inLrc];
+                filePaths[inLrc] = NULL;
+                inLrc--;
+            }
             inMp3 = -1;
             isMp3 = false;
         }
@@ -370,11 +373,19 @@ enum OPT DrawPlay()
 
         if (hoverButton(Discard2) && isMouseClicked())
         {
+            TraceLog(LOG_INFO, "CAREOKE: FREE %s", filePaths[inLrc]);
+
             free(filePaths[inLrc]);
             free(tmpLrcPath);
             filePaths[inLrc] = NULL;
             tmpLrcPath = NULL;
             filePathCounter--;
+            if (inMp3 != -1 && inMp3 > inLrc)
+            {
+                filePaths[inMp3 - 1] = filePaths[inMp3];
+                filePaths[inMp3] = NULL;
+                inMp3--;
+            }
             inLrc = -1;
             isLrc = false;
         }
@@ -421,7 +432,10 @@ enum OPT DrawPlay()
                     filters,
                     ".mp3, .lrc",
                     0);
-                if (tmpFilePaths != NULL)
+                if (tmpFilePaths == NULL)
+                    TraceLog(LOG_ERROR, "CAREOKE: There was a error during taking the file input");
+
+                else
                 {
                     if (IsFileExtension(tmpFilePaths, ".mp3") || IsFileExtension(tmpFilePaths, ".lrc"))
                     {
@@ -430,25 +444,21 @@ enum OPT DrawPlay()
                             int pathLen = strlen(tmpFilePaths) + 1;
                             filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
                             strcpy(filePaths[filePathCounter], tmpFilePaths);
-                            if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                            if (IsFileExtension(filePaths[filePathCounter], ".mp3"))
                             {
-                                isLrc = 1;
-                                inMp3 = 1;
-                                inLrc = 0;
+                                isMp3 = true;
+                                inMp3 = filePathCounter;
                             }
                             else
                             {
-                                isMp3 = 1;
-                                inMp3 = 0;
-                                inLrc = 1;
+                                isLrc = true;
+                                inLrc = filePathCounter;
                             }
                             filePathCounter++;
                         }
                     }
                     else
-                    {
                         errTime = 3000.0f;
-                    }
                 }
             }
 
@@ -461,7 +471,10 @@ enum OPT DrawPlay()
                     filters,
                     ".mp3, .lrc",
                     1);
-                if (tmpFilePaths != NULL)
+                if (tmpFilePaths == NULL)
+                    TraceLog(LOG_ERROR, "CAREOKE: There was a error during taking the file input");
+
+                else
                 {
                     if (memchr(tmpFilePaths, '|', strlen(tmpFilePaths)))
                     {
@@ -474,15 +487,15 @@ enum OPT DrawPlay()
                                 int pathLen = strlen(currentPath1) + 1;
                                 filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
                                 strcpy(filePaths[filePathCounter], currentPath1);
-                                if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                                if (IsFileExtension(filePaths[filePathCounter], ".mp3"))
                                 {
-                                    isLrc = 1;
-                                    inMp3 = 1;
-                                    inLrc = 0;
+                                    isMp3 = true;
+                                    inMp3 = filePathCounter;
                                 }
                                 else
                                 {
-                                    isMp3 = 1;
+                                    isLrc = true;
+                                    inLrc = filePathCounter;
                                 }
                                 filePathCounter++;
                             }
@@ -491,15 +504,15 @@ enum OPT DrawPlay()
                                 int pathLen = strlen(currentPath2) + 1;
                                 filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
                                 strcpy(filePaths[filePathCounter], currentPath2);
-                                if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                                if (IsFileExtension(filePaths[filePathCounter], ".mp3"))
                                 {
-                                    isLrc = 1;
-                                    inMp3 = 1;
-                                    inLrc = 0;
+                                    isMp3 = true;
+                                    inMp3 = filePathCounter;
                                 }
                                 else
                                 {
-                                    isMp3 = 1;
+                                    isLrc = true;
+                                    inLrc = filePathCounter;
                                 }
                                 filePathCounter++;
                             }
@@ -514,17 +527,15 @@ enum OPT DrawPlay()
                             int pathLen = strlen(tmpFilePaths) + 1;
                             filePaths[filePathCounter] = RL_CALLOC(pathLen, sizeof(char));
                             strcpy(filePaths[filePathCounter], tmpFilePaths);
-                            if (!IsFileExtension(filePaths[filePathCounter], ".mp3"))
+                            if (IsFileExtension(filePaths[filePathCounter], ".mp3"))
                             {
-                                isLrc = 1;
-                                inMp3 = 1;
-                                inLrc = 0;
+                                isMp3 = true;
+                                inMp3 = filePathCounter;
                             }
                             else
                             {
-                                isMp3 = 1;
-                                inMp3 = 0;
-                                inLrc = 1;
+                                isLrc = true;
+                                inLrc = filePathCounter;
                             }
                             filePathCounter++;
                         }
