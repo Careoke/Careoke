@@ -2,6 +2,8 @@
 #define MENU_H
 
 #define MAX_FILEPATH_RECORDED 2
+#define VERSION "0.1.0"
+#define TYPE "BETA"
 
 #ifdef RELEASE
 #include "../headers/raylib.h"

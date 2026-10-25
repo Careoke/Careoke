@@ -709,6 +709,10 @@ int DrawPlayMenu()
     Exit.y = (GetScreenHeight() / 2) + (40 + 75 + 106 * 2);
     DrawRectangleRec(Exit, Butcol4);
 
+    // version
+    DrawText(VERSION, 10, GetScreenHeight() - 50, 50, BLACK);
+    DrawText(TYPE, 20 + MeasureText(VERSION, 50), GetScreenHeight() - 50, 30, RED);
+
     DrawText(
         "PLAY",
         play.x + ((play.width / 2) - MeasureText("PLAY", 50) / 2),
