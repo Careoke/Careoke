@@ -19,10 +19,21 @@ typedef struct
     char *lyric;
 } Token;
 
+/**
+ * @brief frees token
+ *
+ * @var tokens to free
+ *
+ * @var count how many tokens it has
+ */
 void FreeTokens(Token **tokens, int count);
 
 /**
  * @brief Takes a *.lrc file and put the contents as Token
+ *
+ * @var lrcFile directory of lrc
+ *
+ * @var token token to fill the value
  *
  * @return Return the number of lyrics
  */
