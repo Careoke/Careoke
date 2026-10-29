@@ -17,6 +17,9 @@ Rectangle ExitWindow = {0};
 Rectangle ExitButton1 = {0};
 Rectangle ExitButton2 = {0};
 Rectangle ButContinue = {0};
+Rectangle Rlocal = {0};
+Rectangle Rlibrary = {0};
+Rectangle RbgLoc = {0};
 
 Card raylib = {0};
 Card libtinyfiledialogs = {0};
@@ -24,6 +27,7 @@ Card Colorhunt = {0};
 Card j1gggs = {0};
 
 Color ColCont = {18, 84, 79, 255};
+Color Rhcolor = {130, 112, 71, 255};
 
 Image tmp_tRay = {0};
 Image tmp_tLibtinyfiledialogs = {0};
@@ -37,6 +41,7 @@ Texture2D tJ1gggs = {0};
 
 enum OPT option = NONE;
 enum STATE mode = NOT;
+enum SCREENIN scrin = LOCAL;
 
 bool isWindowFocus = false;
 int errTime;
@@ -123,7 +128,54 @@ enum OPT DrawPlay()
         return NONE;
     }
 
-    if (IsFileDropped())
+    Rlocal.x = 50;
+    Rlocal.y = close.y;
+    Rlocal.width = 250;
+    Rlocal.height = 100;
+    Rlibrary.x = 50 + Rlocal.width + 100;
+    Rlibrary.y = close.y;
+    Rlibrary.width = Rlocal.width;
+    Rlibrary.height = Rlocal.height;
+
+    DrawRectangle(
+        0,
+        0,
+        GetScreenWidth(),
+        GetScreenHeight(),
+        (Color){151, 168, 122, 255});
+
+    DrawText(
+        "X",
+        (GetScreenWidth() - GetScreenWidth() * 0.1f) + 50,
+        (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.1f) / 2)) + 50,
+        50, BLACK);
+    DrawRectangleRec(close, (Color){0, 0, 0, 0});
+
+    DrawRectangleRec(Rlocal, Rhcolor);
+    DrawText("Local", (Rlocal.x + Rlocal.width / 2) - (MeasureText("Local", 50) / 2), (Rlocal.y + Rlocal.height / 2) - (MeasureTextHeight("Local", 50) / 2), 50, WHITE);
+    DrawRectangleRec(Rlibrary, (Color){106, 121, 93, 255});
+    DrawText("Library", (Rlibrary.x + Rlibrary.width / 2) - (MeasureText("Library", 50) / 2), (Rlibrary.y + Rlibrary.height / 2) - (MeasureTextHeight("Library", 50) / 2), 50, WHITE);
+
+    if (hoverButton(Rlocal) && isMouseClicked())
+        scrin = LOCAL;
+    if (hoverButton(Rlibrary) && isMouseClicked())
+        scrin = LIBRARY;
+
+    if (scrin == LOCAL)
+    {
+        Rectangle BgLoc = {
+            .width = (DropB1.x - Rlocal.x) + ((DropB2.x + DropB2.width) - DropB1.x) + (DropB1.x - Rlocal.x),
+            .height = (DropB1.y + DropB1.height) - (Rlocal.height + Rlocal.y) + 20,
+            .x = Rlocal.x,
+            .y = Rlocal.y + Rlocal.height};
+        DrawRectangleRec(BgLoc, Rhcolor);
+    }
+    else
+    {
+        DrawRectangleRec(RbgLoc, Rhcolor);
+    }
+
+    if (scrin == LOCAL && IsFileDropped())
     {
         FilePathList droppedFiles = LoadDroppedFiles();
 
@@ -171,226 +223,218 @@ enum OPT DrawPlay()
         if (isLrc && isMp3 && filePathCounter == 2)
             showContinue = 1;
     // mode = PLAYING;
-    if (filePathCounter == 0)
+    if (scrin == LOCAL)
     {
-        inMp3 = -1;
-        inLrc = -1;
-        isLrc = 0;
-        isMp3 = 0;
-    }
-
-    if (filePathCounter < 2)
-        showContinue = 0;
-
-    DropB1.x = 0 + 60;
-    DropB1.y = ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)) + 100;
-    DropB1.width = (GetScreenWidth() - 180) / 2;
-    if (!showContinue)
-        DropB1.height = (GetScreenHeight() - DropB1.y) - 50;
-    else
-        DropB1.height = (GetScreenHeight() - DropB1.y) - 250;
-    Discard1.width = 70;
-    Discard1.height = 70;
-    Discard1.x = DropB1.x + DropB1.width - Discard1.width - 7;
-    Discard1.y = DropB1.y + 7;
-    DropB2.x = 60 + DropB1.width + 60;
-    DropB2.y = DropB1.y;
-    DropB2.width = (GetScreenWidth() - 180) / 2;
-    if (!showContinue)
-        DropB2.height = (GetScreenHeight() - DropB1.y) - 50;
-    else
-        DropB2.height = (GetScreenHeight() - DropB1.y) - 250;
-    Discard2.width = 70;
-    Discard2.height = 70;
-    Discard2.x = DropB2.x + DropB2.width - Discard2.width - 7;
-    Discard2.y = DropB2.y + 7;
-    UrlBox.x = ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("Drop your Lrc file Here :D", 20) / 2);
-    UrlBox.y = DropB2.y + (DropB2.height / 2) + 40 + 20,
-    UrlBox.width = MeasureText("Drop your Lrc file Here :D", 20),
-    UrlBox.height = 40;
-    close.x = (GetScreenWidth() - GetScreenWidth() * 0.1f) + 50;
-    close.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.1f) / 2)) + 50;
-    ButContinue.x = DropB1.x;
-    ButContinue.width = DropB1.width + DropB2.width + 60;
-    ButContinue.height = 100;
-    ButContinue.y = DropB1.y + DropB1.height + (250 / 2 - ButContinue.height / 2);
-
-    if (inMp3 != -1 && filePaths[inMp3] && tmpMp3Path == NULL)
-    {
-        TraceLog(LOG_INFO, "%s", filePaths[inMp3]);
-        if (DropB1.width <= MeasureText(GetFileName(filePaths[inMp3]), 40))
+        if (filePathCounter == 0)
         {
-            size_t size_tmpMp3Path = ((DropB1.width - MeasureText("...", 40)) / 40);
-            tmpMp3Path = malloc(size_tmpMp3Path + 4);
-            strncpy(tmpMp3Path, GetFileName(filePaths[inMp3]), size_tmpMp3Path);
-            tmpMp3Path[size_tmpMp3Path] = '\0';
-            strcat(tmpMp3Path, "...");
-        }
-        else
-        {
-            tmpMp3Path = malloc(strlen(GetFileName(filePaths[inMp3])) + 1);
-            strcpy(tmpMp3Path, GetFileName(filePaths[inMp3]));
-        }
-    }
-
-    if (inLrc != -1 && filePaths[inLrc] && tmpLrcPath == NULL)
-    {
-        TraceLog(LOG_INFO, "%s", filePaths[inLrc]);
-        if (DropB1.width <= MeasureText(GetFileName(filePaths[inLrc]), 40))
-        {
-            size_t size_tmpLrcPath = ((DropB1.width - MeasureText("...", 40)) / 40);
-            tmpLrcPath = malloc(size_tmpLrcPath + 4);
-            strncpy(tmpLrcPath, GetFileName(filePaths[inLrc]), size_tmpLrcPath);
-            tmpLrcPath[size_tmpLrcPath] = '\0';
-            strcat(tmpLrcPath, "...");
-        }
-        else
-        {
-            tmpLrcPath = malloc(strlen(GetFileName(filePaths[inLrc])) + 1);
-            strcpy(tmpLrcPath, GetFileName(filePaths[inLrc]));
-        }
-    }
-
-    DrawRectangle(
-        0,
-        0,
-        GetScreenWidth(),
-        GetScreenHeight(),
-        (Color){151, 168, 122, 255});
-
-    DrawText(
-        "X",
-        (GetScreenWidth() - GetScreenWidth() * 0.1f) + 50,
-        (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.1f) / 2)) + 50,
-        50, BLACK);
-    DrawRectangleRec(close, (Color){0, 0, 0, 0});
-
-    DrawText(
-        "Let's Get Singing~!",
-        ((GetScreenWidth() / 2) - (MeasureText("Let's Get Singing~!", 50) / 2)),
-        ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)),
-        50, Textcol);
-
-    DrawRectangleRec(DropB1, (Color){191, 162, 140, 255 / 2});
-    if (!isMp3)
-        DrawRectangleLinesEx(
-            DropB1,
-            5,
-            (Color){85, 94, 83, 255});
-    else
-        DrawRectangleLinesEx(
-            DropB1,
-            7,
-            (Color){0, 128, 0, 255});
-    if (!isMp3)
-        DrawText(
-            "Drop your Music Here :3",
-            (60 + DropB1.width / 2) - (MeasureText("Drop your Music Here :3", 40) / 2),
-            DropB1.y + (DropB1.height / 2),
-            40,
-            (Color){252, 249, 234, 255});
-    else
-    {
-        DrawText(
-            TextFormat("%s", tmpMp3Path),
-            (60 + DropB1.width / 2) - (MeasureText(tmpMp3Path, 40) / 2),
-            DropB1.y + (DropB1.height / 2),
-            40,
-            (Color){252, 249, 234, 255});
-        DrawRectangleRec(Discard1, RED);
-        DrawText(
-            "X",
-            (Discard1.x + Discard1.width / 2) - (MeasureText("X", 50) / 2),
-            (Discard1.y + (Discard1.height / 2)) - (MeasureTextHeight("X", 50) / 2),
-            50,
-            BLACK);
-
-        if (hoverButton(Discard1) && isMouseClicked())
-        {
-            TraceLog(LOG_INFO, "CAREOKE: FREE %s", filePaths[inMp3]);
-            free(filePaths[inMp3]);
-            filePaths[inMp3] = NULL;
-            free(tmpMp3Path);
-            tmpMp3Path = NULL;
-            filePathCounter--;
-            if (inLrc != -1 && inLrc > inMp3)
-            {
-                filePaths[inLrc - 1] = filePaths[inLrc];
-                filePaths[inLrc] = NULL;
-                inLrc--;
-            }
             inMp3 = -1;
-            isMp3 = false;
-        }
-    }
-
-    DrawRectangleRec(DropB2, (Color){191, 162, 140, 255 / 2});
-    if (!isLrc)
-        DrawRectangleLinesEx(
-            DropB2,
-            5,
-            (Color){85, 94, 83, 255});
-    else
-        DrawRectangleLinesEx(
-            DropB2,
-            7,
-            (Color){0, 128, 0, 255});
-    if (!isLrc)
-    {
-        DrawText(
-            "Drop your Lrc file Here :D",
-            ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("Drop your Lrc file Here :D", 40) / 2),
-            DropB2.y + (DropB2.height / 2),
-            40,
-            (Color){252, 249, 234, 255});
-        DrawText(
-            "If you don't have an LRC file\n Look here (click to get it)",
-            ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("If you don't have an LRC file\n Look here (click to get it)", 20) / 2),
-            DropB2.y + (DropB2.height / 2) + 40 + 20,
-            20,
-            BLUE);
-        DrawRectangleRec(
-            UrlBox,
-            (Color){0, 0, 0, 0});
-        if (hoverButton(UrlBox) && isMouseClicked())
-            OpenURL("https://lrclib.net/");
-    }
-    else
-    {
-        DrawText(
-            TextFormat("%s", tmpLrcPath),
-            ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText(tmpLrcPath, 40) / 2),
-            DropB2.y + (DropB2.height / 2),
-            40,
-            (Color){252, 249, 234, 255});
-        DrawRectangleRec(Discard2, RED);
-        DrawText(
-            "X",
-            (Discard2.x + Discard2.width / 2) - (MeasureText("X", 50) / 2),
-            (Discard2.y + (Discard2.height / 2)) - (MeasureTextHeight("X", 50) / 2),
-            50,
-            BLACK);
-
-        if (hoverButton(Discard2) && isMouseClicked())
-        {
-            TraceLog(LOG_INFO, "CAREOKE: FREE %s", filePaths[inLrc]);
-
-            free(filePaths[inLrc]);
-            free(tmpLrcPath);
-            filePaths[inLrc] = NULL;
-            tmpLrcPath = NULL;
-            filePathCounter--;
-            if (inMp3 != -1 && inMp3 > inLrc)
-            {
-                filePaths[inMp3 - 1] = filePaths[inMp3];
-                filePaths[inMp3] = NULL;
-                inMp3--;
-            }
             inLrc = -1;
-            isLrc = false;
+            isLrc = 0;
+            isMp3 = 0;
+        }
+
+        if (filePathCounter < 2)
+            showContinue = 0;
+
+        DropB1.x = 0 + 60;
+        DropB1.y = ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)) + 100;
+        DropB1.width = (GetScreenWidth() - 180) / 2;
+        if (!showContinue)
+            DropB1.height = (GetScreenHeight() - DropB1.y) - 50;
+        else
+            DropB1.height = (GetScreenHeight() - DropB1.y) - 250;
+        Discard1.width = 70;
+        Discard1.height = 70;
+        Discard1.x = DropB1.x + DropB1.width - Discard1.width - 7;
+        Discard1.y = DropB1.y + 7;
+        DropB2.x = 60 + DropB1.width + 60;
+        DropB2.y = DropB1.y;
+        DropB2.width = (GetScreenWidth() - 180) / 2;
+        if (!showContinue)
+            DropB2.height = (GetScreenHeight() - DropB1.y) - 50;
+        else
+            DropB2.height = (GetScreenHeight() - DropB1.y) - 250;
+        Discard2.width = 70;
+        Discard2.height = 70;
+        Discard2.x = DropB2.x + DropB2.width - Discard2.width - 7;
+        Discard2.y = DropB2.y + 7;
+        UrlBox.x = ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("Drop your Lrc file Here :D", 20) / 2);
+        UrlBox.y = DropB2.y + (DropB2.height / 2) + 40 + 20,
+        UrlBox.width = MeasureText("Drop your Lrc file Here :D", 20),
+        UrlBox.height = 40;
+        close.x = (GetScreenWidth() - GetScreenWidth() * 0.1f) + 50;
+        close.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.1f) / 2)) + 50;
+        ButContinue.x = DropB1.x;
+        ButContinue.width = DropB1.width + DropB2.width + 60;
+        ButContinue.height = 100;
+        ButContinue.y = DropB1.y + DropB1.height + (250 / 2 - ButContinue.height / 2);
+
+        if (inMp3 != -1 && filePaths[inMp3] && tmpMp3Path == NULL)
+        {
+            TraceLog(LOG_INFO, "%s", filePaths[inMp3]);
+            if (DropB1.width <= MeasureText(GetFileName(filePaths[inMp3]), 40))
+            {
+                size_t size_tmpMp3Path = ((DropB1.width - MeasureText("...", 40)) / 40);
+                tmpMp3Path = malloc(size_tmpMp3Path + 4);
+                strncpy(tmpMp3Path, GetFileName(filePaths[inMp3]), size_tmpMp3Path);
+                tmpMp3Path[size_tmpMp3Path] = '\0';
+                strcat(tmpMp3Path, "...");
+            }
+            else
+            {
+                tmpMp3Path = malloc(strlen(GetFileName(filePaths[inMp3])) + 1);
+                strcpy(tmpMp3Path, GetFileName(filePaths[inMp3]));
+            }
+        }
+
+        if (inLrc != -1 && filePaths[inLrc] && tmpLrcPath == NULL)
+        {
+            TraceLog(LOG_INFO, "%s", filePaths[inLrc]);
+            if (DropB1.width <= MeasureText(GetFileName(filePaths[inLrc]), 40))
+            {
+                size_t size_tmpLrcPath = ((DropB1.width - MeasureText("...", 40)) / 40);
+                tmpLrcPath = malloc(size_tmpLrcPath + 4);
+                strncpy(tmpLrcPath, GetFileName(filePaths[inLrc]), size_tmpLrcPath);
+                tmpLrcPath[size_tmpLrcPath] = '\0';
+                strcat(tmpLrcPath, "...");
+            }
+            else
+            {
+                tmpLrcPath = malloc(strlen(GetFileName(filePaths[inLrc])) + 1);
+                strcpy(tmpLrcPath, GetFileName(filePaths[inLrc]));
+            }
+        }
+
+        DrawText(
+            "Let's Get Singing~!",
+            ((GetScreenWidth() / 2) - (MeasureText("Let's Get Singing~!", 50) / 2)),
+            ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)),
+            50, Textcol);
+
+        DrawRectangleRec(DropB1, (Color){191, 162, 140, 255 / 2});
+        if (!isMp3)
+            DrawRectangleLinesEx(
+                DropB1,
+                5,
+                (Color){85, 94, 83, 255});
+        else
+            DrawRectangleLinesEx(
+                DropB1,
+                7,
+                (Color){0, 128, 0, 255});
+        if (!isMp3)
+            DrawText(
+                "Drop your Music Here :3",
+                (60 + DropB1.width / 2) - (MeasureText("Drop your Music Here :3", 40) / 2),
+                DropB1.y + (DropB1.height / 2),
+                40,
+                (Color){252, 249, 234, 255});
+        else
+        {
+            DrawText(
+                TextFormat("%s", tmpMp3Path),
+                (60 + DropB1.width / 2) - (MeasureText(tmpMp3Path, 40) / 2),
+                DropB1.y + (DropB1.height / 2),
+                40,
+                (Color){252, 249, 234, 255});
+            DrawRectangleRec(Discard1, RED);
+            DrawText(
+                "X",
+                (Discard1.x + Discard1.width / 2) - (MeasureText("X", 50) / 2),
+                (Discard1.y + (Discard1.height / 2)) - (MeasureTextHeight("X", 50) / 2),
+                50,
+                BLACK);
+
+            if (hoverButton(Discard1) && isMouseClicked())
+            {
+                TraceLog(LOG_INFO, "CAREOKE: FREE %s", filePaths[inMp3]);
+                free(filePaths[inMp3]);
+                filePaths[inMp3] = NULL;
+                free(tmpMp3Path);
+                tmpMp3Path = NULL;
+                filePathCounter--;
+                if (inLrc != -1 && inLrc > inMp3)
+                {
+                    filePaths[inLrc - 1] = filePaths[inLrc];
+                    filePaths[inLrc] = NULL;
+                    inLrc--;
+                }
+                inMp3 = -1;
+                isMp3 = false;
+            }
+        }
+
+        DrawRectangleRec(DropB2, (Color){191, 162, 140, 255 / 2});
+        if (!isLrc)
+            DrawRectangleLinesEx(
+                DropB2,
+                5,
+                (Color){85, 94, 83, 255});
+        else
+            DrawRectangleLinesEx(
+                DropB2,
+                7,
+                (Color){0, 128, 0, 255});
+        if (!isLrc)
+        {
+            DrawText(
+                "Drop your Lrc file Here :D",
+                ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("Drop your Lrc file Here :D", 40) / 2),
+                DropB2.y + (DropB2.height / 2),
+                40,
+                (Color){252, 249, 234, 255});
+            DrawText(
+                "If you don't have an LRC file\n Look here (click to get it)",
+                ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("If you don't have an LRC file\n Look here (click to get it)", 20) / 2),
+                DropB2.y + (DropB2.height / 2) + 40 + 20,
+                20,
+                BLUE);
+            DrawRectangleRec(
+                UrlBox,
+                (Color){0, 0, 0, 0});
+            if (hoverButton(UrlBox) && isMouseClicked())
+                OpenURL("https://lrclib.net/");
+        }
+        else
+        {
+            DrawText(
+                TextFormat("%s", tmpLrcPath),
+                ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText(tmpLrcPath, 40) / 2),
+                DropB2.y + (DropB2.height / 2),
+                40,
+                (Color){252, 249, 234, 255});
+            DrawRectangleRec(Discard2, RED);
+            DrawText(
+                "X",
+                (Discard2.x + Discard2.width / 2) - (MeasureText("X", 50) / 2),
+                (Discard2.y + (Discard2.height / 2)) - (MeasureTextHeight("X", 50) / 2),
+                50,
+                BLACK);
+
+            if (hoverButton(Discard2) && isMouseClicked())
+            {
+                TraceLog(LOG_INFO, "CAREOKE: FREE %s", filePaths[inLrc]);
+
+                free(filePaths[inLrc]);
+                free(tmpLrcPath);
+                filePaths[inLrc] = NULL;
+                tmpLrcPath = NULL;
+                filePathCounter--;
+                if (inMp3 != -1 && inMp3 > inLrc)
+                {
+                    filePaths[inMp3 - 1] = filePaths[inMp3];
+                    filePaths[inMp3] = NULL;
+                    inMp3--;
+                }
+                inLrc = -1;
+                isLrc = false;
+            }
         }
     }
 
+    else
+    {
+    }
     if (showContinue)
     {
         if (hoverButton(ButContinue))
@@ -420,7 +464,7 @@ enum OPT DrawPlay()
 
     if (enter == true)
     {
-        if (filePathCounter < 2 && DropBoxHovered && isMouseClicked())
+        if (scrin == LOCAL && filePathCounter < 2 && DropBoxHovered && isMouseClicked())
         {
             char *tmpFilePaths = NULL;
             if (filePathCounter == 1)

@@ -48,6 +48,12 @@ enum OPT
     NONE
 };
 
+enum SCREENIN
+{
+    LOCAL,
+    LIBRARY
+};
+
 extern enum OPT option;
 extern enum STATE mode;
 
