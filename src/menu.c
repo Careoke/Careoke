@@ -28,6 +28,7 @@ Card j1gggs = {0};
 
 Color ColCont = {18, 84, 79, 255};
 Color Rhcolor = {130, 112, 71, 255};
+Color Rlcolor = {106, 121, 93, 255};
 
 Image tmp_tRay = {0};
 Image tmp_tLibtinyfiledialogs = {0};
@@ -136,6 +137,43 @@ enum OPT DrawPlay()
     Rlibrary.y = close.y;
     Rlibrary.width = Rlocal.width;
     Rlibrary.height = Rlocal.height;
+    Rectangle BgLoc = {
+        .width = (DropB1.x - Rlocal.x) + ((DropB2.x + DropB2.width) - DropB1.x) + (DropB1.x - Rlocal.x),
+        .height = (DropB1.y + DropB1.height) - (Rlocal.height + Rlocal.y) + 20,
+        .x = Rlocal.x,
+        .y = Rlocal.y + Rlocal.height};
+    DropB1.x = 0 + 60;
+    DropB1.y = ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)) + 100;
+    DropB1.width = (GetScreenWidth() - 180) / 2;
+    if (!showContinue)
+        DropB1.height = (GetScreenHeight() - DropB1.y) - 50;
+    else
+        DropB1.height = (GetScreenHeight() - DropB1.y) - 250;
+    Discard1.width = 70;
+    Discard1.height = 70;
+    Discard1.x = DropB1.x + DropB1.width - Discard1.width - 7;
+    Discard1.y = DropB1.y + 7;
+    DropB2.x = 60 + DropB1.width + 60;
+    DropB2.y = DropB1.y;
+    DropB2.width = (GetScreenWidth() - 180) / 2;
+    if (!showContinue)
+        DropB2.height = (GetScreenHeight() - DropB1.y) - 50;
+    else
+        DropB2.height = (GetScreenHeight() - DropB1.y) - 250;
+    Discard2.width = 70;
+    Discard2.height = 70;
+    Discard2.x = DropB2.x + DropB2.width - Discard2.width - 7;
+    Discard2.y = DropB2.y + 7;
+    UrlBox.x = ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("Drop your Lrc file Here :D", 20) / 2);
+    UrlBox.y = DropB2.y + (DropB2.height / 2) + 40 + 20,
+    UrlBox.width = MeasureText("Drop your Lrc file Here :D", 20),
+    UrlBox.height = 40;
+    close.x = (GetScreenWidth() - GetScreenWidth() * 0.1f) + 50;
+    close.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.1f) / 2)) + 50;
+    ButContinue.x = DropB1.x;
+    ButContinue.width = DropB1.width + DropB2.width + 60;
+    ButContinue.height = 100;
+    ButContinue.y = DropB1.y + DropB1.height + (250 / 2 - ButContinue.height / 2);
 
     DrawRectangle(
         0,
@@ -153,27 +191,22 @@ enum OPT DrawPlay()
 
     DrawRectangleRec(Rlocal, Rhcolor);
     DrawText("Local", (Rlocal.x + Rlocal.width / 2) - (MeasureText("Local", 50) / 2), (Rlocal.y + Rlocal.height / 2) - (MeasureTextHeight("Local", 50) / 2), 50, WHITE);
-    DrawRectangleRec(Rlibrary, (Color){106, 121, 93, 255});
+    DrawRectangleRec(Rlibrary, Rlcolor);
     DrawText("Library", (Rlibrary.x + Rlibrary.width / 2) - (MeasureText("Library", 50) / 2), (Rlibrary.y + Rlibrary.height / 2) - (MeasureTextHeight("Library", 50) / 2), 50, WHITE);
+
+    if (scrin != LOCAL && hoverButton(Rlocal))
+        Rhcolor.a = 255 / 2;
+    else
+        Rhcolor.a = 255;
+    if (scrin != LIBRARY && hoverButton(Rlibrary))
+        Rlcolor.a = 255 / 2;
+    else
+        Rlcolor.a = 255;
 
     if (hoverButton(Rlocal) && isMouseClicked())
         scrin = LOCAL;
     if (hoverButton(Rlibrary) && isMouseClicked())
         scrin = LIBRARY;
-
-    if (scrin == LOCAL)
-    {
-        Rectangle BgLoc = {
-            .width = (DropB1.x - Rlocal.x) + ((DropB2.x + DropB2.width) - DropB1.x) + (DropB1.x - Rlocal.x),
-            .height = (DropB1.y + DropB1.height) - (Rlocal.height + Rlocal.y) + 20,
-            .x = Rlocal.x,
-            .y = Rlocal.y + Rlocal.height};
-        DrawRectangleRec(BgLoc, Rhcolor);
-    }
-    else
-    {
-        DrawRectangleRec(RbgLoc, Rhcolor);
-    }
 
     if (scrin == LOCAL && IsFileDropped())
     {
@@ -236,39 +269,6 @@ enum OPT DrawPlay()
         if (filePathCounter < 2)
             showContinue = 0;
 
-        DropB1.x = 0 + 60;
-        DropB1.y = ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)) + 100;
-        DropB1.width = (GetScreenWidth() - 180) / 2;
-        if (!showContinue)
-            DropB1.height = (GetScreenHeight() - DropB1.y) - 50;
-        else
-            DropB1.height = (GetScreenHeight() - DropB1.y) - 250;
-        Discard1.width = 70;
-        Discard1.height = 70;
-        Discard1.x = DropB1.x + DropB1.width - Discard1.width - 7;
-        Discard1.y = DropB1.y + 7;
-        DropB2.x = 60 + DropB1.width + 60;
-        DropB2.y = DropB1.y;
-        DropB2.width = (GetScreenWidth() - 180) / 2;
-        if (!showContinue)
-            DropB2.height = (GetScreenHeight() - DropB1.y) - 50;
-        else
-            DropB2.height = (GetScreenHeight() - DropB1.y) - 250;
-        Discard2.width = 70;
-        Discard2.height = 70;
-        Discard2.x = DropB2.x + DropB2.width - Discard2.width - 7;
-        Discard2.y = DropB2.y + 7;
-        UrlBox.x = ((60 + 60 + DropB1.width) + DropB2.width / 2) - (MeasureText("Drop your Lrc file Here :D", 20) / 2);
-        UrlBox.y = DropB2.y + (DropB2.height / 2) + 40 + 20,
-        UrlBox.width = MeasureText("Drop your Lrc file Here :D", 20),
-        UrlBox.height = 40;
-        close.x = (GetScreenWidth() - GetScreenWidth() * 0.1f) + 50;
-        close.y = (((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.1f) / 2)) + 50;
-        ButContinue.x = DropB1.x;
-        ButContinue.width = DropB1.width + DropB2.width + 60;
-        ButContinue.height = 100;
-        ButContinue.y = DropB1.y + DropB1.height + (250 / 2 - ButContinue.height / 2);
-
         if (inMp3 != -1 && filePaths[inMp3] && tmpMp3Path == NULL)
         {
             TraceLog(LOG_INFO, "%s", filePaths[inMp3]);
@@ -304,6 +304,8 @@ enum OPT DrawPlay()
                 strcpy(tmpLrcPath, GetFileName(filePaths[inLrc]));
             }
         }
+
+        DrawRectangleRec(BgLoc, Rhcolor);
 
         DrawText(
             "Let's Get Singing~!",
@@ -431,9 +433,9 @@ enum OPT DrawPlay()
             }
         }
     }
-
     else
     {
+        DrawRectangleRec(BgLoc, Rlcolor);
     }
     if (showContinue)
     {
