@@ -64,7 +64,10 @@ int main()
     SetCardData(EXAMPLE, CARD_TITLE, 2, "Shapeless you");
     SetCardData(EXAMPLE, CARD_SCORE, 2, "92");
     SetCardData(EXAMPLE, CARD_LRC_PATH, 2, "./idk/this/is/example/iguess.lrc");
-    SetCardData(EXAMPLE, CARD_MP3_PATH, 2, "./music/shapeless you.mp3");
+
+    printf("===========\n");
+    SetCardData(EXAMPLE, CARD_MP3_PATH, 2, "=0=");
+    printf("===========\n");
 
     ReadOKEData(EXAMPLE, &cards, &sett);
 
