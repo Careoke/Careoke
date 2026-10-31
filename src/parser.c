@@ -537,6 +537,18 @@ int SetCardDataEx(char *Indir, char *Outdir, Cardtype type, int cardIndex, char 
         break;
     }
 
+    if (call == 0 || call == 1 || call == 4 || call == 5)
+    {
+        if (val == NULL || strcmp(val, ZERO) == 0)
+        {
+            fclose(f);
+            fclose(f2);
+            remove(Outdir);
+            fprintf(stderr, "The Value can't be NULL/=0=");
+            return 1;
+        }
+    }
+
     for (;;)
     {
         Line = ReadFileStream(f, 0);
@@ -647,6 +659,15 @@ int SetCardDataEx(char *Indir, char *Outdir, Cardtype type, int cardIndex, char 
 
 int AddNewCardEx(char *Indir, char *Outdir, MusicTrack NewCard)
 {
+    if (
+        (NewCard.name == NULL || strcmp(NewCard.name, ZERO) == 0) ||
+        (NewCard.length == 0.0f) ||
+        (NewCard.musicPath == NULL || strcmp(NewCard.musicPath, ZERO) == 0) ||
+        (NewCard.lrcPath == NULL || strcmp(NewCard.lrcPath, ZERO)) == 0)
+    {
+        fprintf(stderr, "The Value can't be NULL/=0=");
+        return 1;
+    }
     FILE *f = fopen(Indir, "r");
     if (!f)
     {
