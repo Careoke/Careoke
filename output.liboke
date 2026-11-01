@@ -6,6 +6,7 @@
         background_sound - 10.00
         background_color - ffffff
         default_config - ./am/a/liboke.liboke
+        auto_save - 0
 \1\
 
 [cards] \0\

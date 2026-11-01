@@ -14,6 +14,7 @@
 ! colors as values will be in hex
         default_config - ./am/a/liboke.liboke
 ! =0= means it's NULL/0 in this case deafult config file is null means the game will use the default address
+        auto_save - 0
 ! as now we don't have any settings pannel so we can just leave it empty
 \1\
 

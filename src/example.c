@@ -38,11 +38,14 @@ int main()
     else
         printf("Default Config:    %s\n", sett.default_config);
 
+    printf("Auto save: %d\n", sett.auto_save);
+
     printf("changing settings values\n");
     SetSettingData(EXAMPLE, SETTING_MASTER_SOUND, "10");
     SetSettingData(EXAMPLE, SETTING_BACKGROUND_SOUND, "10");
     SetSettingData(EXAMPLE, SETTING_BACKGROUND_COLOR, "FFFFFF");
     SetSettingData(EXAMPLE, SETTING_DEFAULT_CONFIG, "./am/a/liboke.liboke");
+    SetSettingData(EXAMPLE, SETTING_AUTO_SAVE, "0");
     ReadOKEData(EXAMPLE, &cards, &sett);
 
     printf("Master Sound:      %.2f\n", sett.master_sound);
@@ -56,6 +59,8 @@ int main()
     else
         printf("Default Config:    %s\n", sett.default_config);
 
+    printf("Auto save: %d\n", sett.auto_save);
+
     SetCardData(EXAMPLE, CARD_TITLE, 1, "I Think I saw your face today");
     SetCardData(EXAMPLE, CARD_SCORE, 1, "75");
     SetCardData(EXAMPLE, CARD_LRC_PATH, 1, "./lyrics/I Think I saw your face today.lrc");
@@ -67,7 +72,7 @@ int main()
 
     printf("===========\n");
     SetCardData(EXAMPLE, CARD_MP3_PATH, 2, "=0=");
-    printf("===========\n");
+    printf("\n===========\n");
 
     ReadOKEData(EXAMPLE, &cards, &sett);
 
@@ -133,6 +138,8 @@ int main()
         printf("Default Config:    NULL\n");
     else
         printf("Default Config:    %s\n", sett.default_config);
+
+    printf("Auto save: %d\n", sett.auto_save);
 
     printf("card amount: %d\n", cards.count);
     for (int i = 0; i < cards.count; i++)
