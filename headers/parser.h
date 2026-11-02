@@ -18,6 +18,7 @@ static const char DEFAULT_LIBOKE[] =
     "        background_sound - 100\n"
     "        background_color - =0=\n"
     "        default_config - =0=\n"
+    "        auto_save - 0\n"
     "\\1\\\n"
     "\n"
     "[DONE]\n";
@@ -32,6 +33,8 @@ static const char DEFAULT_LIBOKE[] =
  * @var background_color hexdecial value for color of the theme
  *
  * @var default_config where the default config(liboke) is
+ *
+ * @var auto_save should the cards be automaticlly imported?
  */
 typedef struct Settings
 {
@@ -39,6 +42,7 @@ typedef struct Settings
     float background_sound;
     unsigned int background_color;
     char *default_config;
+    int auto_save;
 } Settings;
 
 /**
@@ -96,6 +100,7 @@ typedef enum SettingType
     SETTING_BACKGROUND_SOUND,
     SETTING_BACKGROUND_COLOR,
     SETTING_DEFAULT_CONFIG,
+    SETTING_AUTO_SAVE,
 } SettingType;
 
 /**

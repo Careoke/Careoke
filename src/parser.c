@@ -131,7 +131,8 @@ int ValidateOke(char *dir)
                         if (strcmp(key, "master_sound") != 0 &&
                             strcmp(key, "background_sound") != 0 &&
                             strcmp(key, "background_color") != 0 &&
-                            strcmp(key, "default_config") != 0)
+                            strcmp(key, "default_config") != 0 &&
+                            strcmp(key, "auto_save") != 0)
                         {
                             free(Line);
                             fclose(f);
@@ -257,6 +258,8 @@ int ReadOKEData(char *dir, Deck *cards, Settings *sets)
                                 strcpy(sets->default_config, value);
                             }
                         }
+                        else if (strcmp(key, "auto_save") == 0)
+                            sets->auto_save = (int)strtol(value, NULL, 10);
                     }
                 }
                 free(Line);
@@ -357,6 +360,10 @@ int SetSettingDataEx(char *Indir, char *Outdir, SettingType type, char *val)
         target = malloc(strlen("default_config") + 1);
         strcpy(target, "default_config");
         break;
+    case SETTING_AUTO_SAVE:
+        target = malloc(strlen("auto_save") + 1);
+        strcpy(target, "auto_save");
+        break;
     default:
         fprintf(stderr, "Invalid setting type: %d\n", type);
         return 1;
@@ -444,6 +451,12 @@ int SetSettingDataEx(char *Indir, char *Outdir, SettingType type, char *val)
                         {
                             door = malloc(snprintf(NULL, 0, "        default_config - %s\n", val) + 1);
                             sprintf(door, "        default_config - %s\n", val);
+                            break;
+                        }
+                        case SETTING_AUTO_SAVE:
+                        {
+                            door = malloc(snprintf(NULL, 0, "        auto_save - %s\n", val) + 1);
+                            sprintf(door, "        auto_save - %s\n", val);
                             break;
                         }
                         }
