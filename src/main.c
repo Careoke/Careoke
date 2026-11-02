@@ -1,12 +1,50 @@
 #include "../headers/menu.h"
 #include "../headers/utility.h"
 #include "../headers/player.h"
+#include "../headers/parser.h"
 #ifndef DEBUG
 #include "../headers/binSource.h"
 #endif // !DEBUG
 
 int main()
 {
+    Deck cards = {0};
+    Settings sett = {0};
+    char *AppData = nullptr;
+
+#ifdef _WIN32
+    char *appDir = getenv("APPDATA");
+#else
+    char *appDir = nullptr;
+    char *TmpappDir = getenv("HOME");
+    size_t tmpappdir_sz = snprintf(NULL, 0, "%s/.local/share/", TmpappDir);
+    appDir = malloc(tmpappdir_sz + 1);
+    snprintf(appDir, tmpappdir_sz + 1, "%s/.local/share/", TmpappDir);
+#endif // DEBUG
+
+    size_t AD_sz = snprintf(NULL, 0, "%s/Careoke/config/default.liboke", appDir);
+    AppData = malloc(AD_sz + 1);
+    snprintf(AppData, AD_sz + 1, "%s/Careoke/config/default.liboke", appDir);
+
+    if (!FileExists(AppData))
+    {
+        if (!FileExists(TextFormat("%s/Careoke", appDir)))
+            MakeDirectory(TextFormat("%s/Careoke", appDir));
+        if (!FileExists(TextFormat("%s/Careoke/config", appDir)))
+            MakeDirectory(TextFormat("%s/Careoke/config", appDir));
+        ResetLiboke(AppData);
+    }
+    else
+    {
+        if (ValidateOke(AppData))
+        {
+            TraceLog(LOG_ERROR, "CAREOKE: MAIN: INVALID LIBOKE FILE");
+            return 1;
+        }
+
+        ReadOKEData(AppData, &cards, &sett);
+    }
+
     int index = 0, index2 = 1;
 
     InitWindow(GetScreenWidth(), 720, "Careoke");
@@ -74,6 +112,10 @@ int main()
     }
     UnloadMusicStream(bg);
     UnloadTimages();
+    free(AppData);
+#ifdef __linux__
+    free(appDir);
+#endif
     freeFilePaths();
     CloseWindow();
 
