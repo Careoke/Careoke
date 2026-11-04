@@ -2,6 +2,8 @@
 #include "../headers/utility.h"
 #include "../headers/player.h"
 #include "../headers/parser.h"
+#include "../headers/global.h"
+
 #ifndef DEBUG
 #include "../headers/binSource.h"
 #endif // !DEBUG

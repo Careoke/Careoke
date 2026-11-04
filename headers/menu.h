@@ -1,7 +1,6 @@
 #ifndef MENU_H
 #define MENU_H
 
-#define MAX_FILEPATH_RECORDED 2
 #define VERSION "0.1.0"
 #define TYPE "BETA"
 
@@ -12,6 +11,7 @@
 #endif // RELEASE
 #include <stdlib.h>
 #include <string.h>
+#include "global.h"
 
 /**
  * @brief a enum that holds the current state of the game
@@ -53,20 +53,6 @@ enum SCREENIN
     LOCAL,
     LIBRARY
 };
-
-extern enum OPT option;
-extern enum STATE mode;
-
-extern char *filePaths[MAX_FILEPATH_RECORDED];
-extern char *tmpMp3Path;
-extern char *tmpLrcPath;
-extern int filePathCounter;
-extern Rectangle Subwindow;
-extern bool enter;
-extern Image tmp_tRay;
-extern Image tmp_tLibtinyfiledialogs;
-extern Image tmp_tColorhunt;
-extern Image tmp_tJ1gggs;
 
 /**
  * @brief does nothing

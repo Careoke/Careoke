@@ -8,7 +8,8 @@
 #else
 #include <raylib.h>
 #endif // RELEASE
-#include "../headers/menu.h"
+#include "global.h"
+
 /**
  * @brief a enum that holds postions to show a dialouge
  */
@@ -36,18 +37,6 @@ typedef struct Card
     Color TextColor;
 } Card;
 
-extern Color Ccol;
-extern Color Bocol;
-extern Color Mencol;
-extern Color Tcol;
-extern Color Pcol;
-extern Color Butcol1;
-extern Color Butcol2;
-extern Color Butcol3;
-extern Color Butcol4;
-extern Color Textcol;
-extern Color ExitButcol1;
-extern Color ExitButcol2;
 /**
  * @brief Take a Rectangle rec and checks if there was a collision between the rectangle and mouse
  *
