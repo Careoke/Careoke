@@ -43,6 +43,15 @@ int main()
         }
 
         ReadOKEData(AppData, &cards, &sett);
+        if (sett.default_config)
+        {
+            free(AppData);
+            AD_sz = strlen(sett.default_config);
+            AppData = malloc(AD_sz + 1);
+            strcpy(AppData, sett.default_config);
+            freeLiboke(cards, sett);
+            ReadOKEData(AppData, &cards, &sett);
+        }
     }
 
     int index = 0, index2 = 1;
@@ -116,6 +125,7 @@ int main()
 #ifdef __linux__
     free(appDir);
 #endif
+    freeLiboke(cards, sett);
     freeFilePaths();
     CloseWindow();
 
