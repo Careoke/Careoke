@@ -53,6 +53,11 @@ int main()
             strcpy(AppData, sett.default_config);
             freeLiboke(cards, sett);
             ReadOKEData(AppData, &cards, &sett);
+            if (ValidateOke(AppData))
+            {
+                TraceLog(LOG_ERROR, "CAREOKE: MAIN: INVALID LIBOKE FILE");
+                return 1;
+            }
         }
     }
 
