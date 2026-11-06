@@ -55,6 +55,7 @@ bool enter = false;
 bool showExit = false;
 bool DropBoxHovered = 0;
 bool showContinue = 0;
+bool ShowSave = false;
 
 bool isMp3 = 0;
 bool isLrc = 0;
@@ -456,7 +457,97 @@ enum OPT DrawPlay()
             50,
             (Color){139, 187, 146, 255});
         if (hoverButton(ButContinue) && isMouseClicked())
-            mode = PLAYING;
+            ShowSave = true;
+
+        if (ShowSave)
+        {
+            if (sett.auto_save != 0)
+            {
+                mode = PLAYING;
+                ShowSave = false;
+            }
+            else
+            {
+                DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){0, 0, 0, 255 / 1.5});
+                Rectangle save = {0};
+                Rectangle butSave = {0};
+                Rectangle butCancle = {0};
+                save.width = MeasureText("Would you Like to Save it in the library?", 50) + 100;
+                save.height = GetScreenHeight() * 0.20f;
+                save.x = GetScreenWidth() / 2 - save.width / 2;
+                save.y = GetScreenHeight() / 2 - save.height / 2;
+                butSave.width = save.width * 0.35f;
+                butCancle.width = butSave.width;
+                butSave.height = save.height * 0.25f;
+                butCancle.height = butSave.height;
+                butSave.y = save.y + save.height - butSave.height - 20;
+                butCancle.y = butSave.y;
+                butSave.x = save.x + 35;
+                butCancle.x = butSave.x + butSave.width + 60;
+
+                DrawRectangleRec(
+                    save,
+                    (Color){101, 146, 135, 255});
+
+                DrawText(
+                    "Would you Like to Save it in the library?",
+                    save.x + 35,
+                    save.y + 35,
+                    50,
+                    (Color){177, 211, 185, 255});
+
+                DrawRectangleRec(butSave, SaveButcol);
+                DrawText(
+                    "Save",
+                    butSave.x + ((butSave.width / 2) - MeasureText("Save", 40) / 2),
+                    butSave.y + ((butSave.height / 2) - MeasureTextHeight("Save", 40) / 2),
+                    40,
+                    (Color){255, 229, 191, 255});
+
+                DrawRectangleRec(butCancle, CancelButcol);
+                DrawText(
+                    "No",
+                    butCancle.x + ((butCancle.width / 2) - MeasureText("No", 40) / 2),
+                    butCancle.y + ((butCancle.height / 2) - MeasureTextHeight("No", 40) / 2),
+                    40,
+                    (Color){255, 229, 191, 255});
+
+                if (hoverButton(butSave))
+                    SaveButcol.a = 200;
+                else if (hoverButton(butCancle))
+                    CancelButcol.a = 200;
+                else
+                {
+                    SaveButcol.a = 255;
+                    CancelButcol.a = 255;
+                }
+
+                if (hoverButton(butCancle) && isMouseClicked())
+                {
+                    mode = PLAYING;
+                    ShowSave = false;
+                }
+
+                if (hoverButton(butSave) && isMouseClicked())
+                {
+                    MusicTrack tmpCard = {0};
+                    tmpCard.musicPath = filePaths[inMp3];
+                    tmpCard.lrcPath = filePaths[inLrc];
+                    tmpCard.name = GetFileName(filePaths[inMp3]);
+                    tmpCard.songPath = "=0=";
+                    Music tmpMus = LoadMusicStream(filePaths[inMp3]);
+                    if (IsMusicValid(tmpMus))
+                    {
+                        tmpCard.length = GetMusicTimeLength(tmpMus);
+                        UnloadMusicStream(tmpMus);
+                    }
+                    if (AddNewCardEx(AppData, tmpEditData, tmpCard))
+                        exit(1);
+                    mode = PLAYING;
+                    ShowSave = false;
+                }
+            }
+        }
     }
 
     if ((hoverButton(DropB1) || hoverButton(DropB2)) && !hoverButton(Discard1) && !hoverButton(Discard2))

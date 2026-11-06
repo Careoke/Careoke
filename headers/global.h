@@ -12,6 +12,8 @@
 #define MAX_FILEPATH_RECORDED 2
 
 // main
+extern char *AppData;
+extern char *tmpEditData;
 extern Deck cards;
 extern Settings sett;
 
@@ -43,5 +45,7 @@ extern Color Butcol4;
 extern Color Textcol;
 extern Color ExitButcol1;
 extern Color ExitButcol2;
+extern Color SaveButcol;
+extern Color CancelButcol;
 
 #endif // ! GLOBAL_H

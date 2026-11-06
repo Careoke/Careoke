@@ -8,11 +8,13 @@
 #include "../headers/binSource.h"
 #endif // !DEBUG
 
+Deck cards = {0};
+Settings sett = {0};
+char *AppData = nullptr;
+char *tmpEditData = nullptr;
+
 int main()
 {
-    Deck cards = {0};
-    Settings sett = {0};
-    char *AppData = nullptr;
 
 #ifdef _WIN32
     char *appDir = getenv("APPDATA");
@@ -27,6 +29,13 @@ int main()
     size_t AD_sz = snprintf(NULL, 0, "%s/Careoke/config/default.liboke", appDir);
     AppData = malloc(AD_sz + 1);
     snprintf(AppData, AD_sz + 1, "%s/Careoke/config/default.liboke", appDir);
+
+    size_t tmpEditData_sz = snprintf(NULL, 0, "%s/Careoke/config/tmp.liboke", appDir);
+    tmpEditData = malloc(tmpEditData_sz + 1);
+    snprintf(tmpEditData, tmpEditData_sz + 1, "%s/Careoke/config/tmp.liboke", appDir);
+
+    if (FileExists(tmpEditData))
+        remove(tmpEditData);
 
     if (!FileExists(AppData))
     {
@@ -44,7 +53,11 @@ int main()
             return 1;
         }
 
-        ReadOKEData(AppData, &cards, &sett);
+        if (ReadOKEData(AppData, &cards, &sett))
+        {
+            TraceLog(LOG_ERROR, "CAREOKE: MAIN: COULDN'T READ");
+            return 1;
+        }
         if (sett.default_config)
         {
             free(AppData);
@@ -129,6 +142,7 @@ int main()
     UnloadMusicStream(bg);
     UnloadTimages();
     free(AppData);
+    free(tmpEditData);
 #ifdef __linux__
     free(appDir);
 #endif
