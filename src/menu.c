@@ -56,6 +56,7 @@ bool showExit = false;
 bool DropBoxHovered = 0;
 bool showContinue = 0;
 bool ShowSave = false;
+bool ticked = false;
 
 bool isMp3 = 0;
 bool isLrc = 0;
@@ -463,6 +464,20 @@ enum OPT DrawPlay()
         {
             if (sett.auto_save != 0)
             {
+                MusicTrack tmpCard = {0};
+                tmpCard.musicPath = filePaths[inMp3];
+                tmpCard.lrcPath = filePaths[inLrc];
+                tmpCard.name = GetFileName(filePaths[inMp3]);
+                tmpCard.songPath = "=0=";
+                Music tmpMus = LoadMusicStream(filePaths[inMp3]);
+                if (IsMusicValid(tmpMus))
+                {
+                    tmpCard.length = GetMusicTimeLength(tmpMus);
+                    UnloadMusicStream(tmpMus);
+                }
+                if (AddNewCardEx(AppData, tmpEditData, tmpCard))
+                    exit(1);
+                ReadOKEData(AppData, &cards, &sett);
                 mode = PLAYING;
                 ShowSave = false;
             }
@@ -472,8 +487,10 @@ enum OPT DrawPlay()
                 Rectangle save = {0};
                 Rectangle butSave = {0};
                 Rectangle butCancle = {0};
-                save.width = MeasureText("Would you Like to Save it in the library?", 50) + 100;
-                save.height = GetScreenHeight() * 0.20f;
+                Rectangle popCross = {0};
+                Rectangle butTickAsave = {0};
+                save.width = MeasureText("Would you Like to Save\nIt in the library?", 50) + 100;
+                save.height = GetScreenHeight() * 0.30f;
                 save.x = GetScreenWidth() / 2 - save.width / 2;
                 save.y = GetScreenHeight() / 2 - save.height / 2;
                 butSave.width = save.width * 0.35f;
@@ -484,17 +501,52 @@ enum OPT DrawPlay()
                 butCancle.y = butSave.y;
                 butSave.x = save.x + 35;
                 butCancle.x = butSave.x + butSave.width + 60;
+                popCross.width = popCross.height = 50;
+                popCross.x = (save.x + save.width) - popCross.width;
+                popCross.y = save.y;
+                butTickAsave.x = save.x + 35;
+                butTickAsave.y = butSave.y + MeasureTextHeight("Always Auto save in library?", 30) - 100;
+                butTickAsave.width = 40;
+                butTickAsave.height = 40;
 
                 DrawRectangleRec(
                     save,
                     (Color){101, 146, 135, 255});
 
                 DrawText(
-                    "Would you Like to Save it in the library?",
+                    "X",
+                    popCross.x + ((popCross.width / 2) - (MeasureText("X", 35) / 2)),
+                    popCross.y + ((popCross.height / 2) - (MeasureTextHeight("X", 35) / 2)),
+                    35,
+                    BLACK);
+
+                DrawRectangleRec(
+                    popCross,
+                    (Color){0, 0, 0, 0});
+
+                if (hoverButton(popCross) && isMouseClicked())
+                    ShowSave = false;
+
+                DrawText(
+                    "Would you Like to Save\nIt in the library?",
                     save.x + 35,
                     save.y + 35,
                     50,
                     (Color){177, 211, 185, 255});
+
+                if (hoverButton(butTickAsave), isMouseClicked())
+                    ticked = !ticked;
+
+                if (ticked)
+                    DrawRectangleLinesEx(butTickAsave, 4, (Color){161, 70, 70, 255});
+                else
+                    DrawRectangleRec(butTickAsave, (Color){161, 70, 70, 255});
+                DrawText(
+                    "Always Auto save in library?",
+                    butTickAsave.x + butTickAsave.width + 20,
+                    butTickAsave.y + (butTickAsave.height / 2 - MeasureTextHeight("Always Auto save in library?", 30) / 2),
+                    30,
+                    (Color){195, 204, 155, 255});
 
                 DrawRectangleRec(butSave, SaveButcol);
                 DrawText(
@@ -524,6 +576,9 @@ enum OPT DrawPlay()
 
                 if (hoverButton(butCancle) && isMouseClicked())
                 {
+                    if (ticked)
+                        SetSettingDataEx(AppData, tmpEditData, SETTING_AUTO_SAVE, "1");
+                    ReadOKEData(AppData, &cards, &sett);
                     mode = PLAYING;
                     ShowSave = false;
                 }
@@ -543,8 +598,13 @@ enum OPT DrawPlay()
                     }
                     if (AddNewCardEx(AppData, tmpEditData, tmpCard))
                         exit(1);
-                    mode = PLAYING;
+                    if (ticked)
+                        SetSettingDataEx(AppData, tmpEditData, SETTING_AUTO_SAVE, "1");
+                    else
+                        SetSettingDataEx(AppData, tmpEditData, SETTING_AUTO_SAVE, "0");
+                    ReadOKEData(AppData, &cards, &sett);
                     ShowSave = false;
+                    mode = PLAYING;
                 }
             }
         }
