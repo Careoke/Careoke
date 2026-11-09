@@ -20,6 +20,8 @@ static const char DEFAULT_LIBOKE[] =
     "        default_config - =0=\n"
     "        auto_save - 0\n"
     "\\1\\\n"
+    "[cards] \\0\\\n"
+    "\\1\\"
     "\n"
     "[DONE]\n";
 
