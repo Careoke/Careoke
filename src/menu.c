@@ -438,7 +438,17 @@ enum OPT DrawPlay()
     else
     {
         DrawRectangleRec(BgLoc, Rlcolor);
+        if (cards.count < 1)
+        {
+            DrawText(
+                "Add Music Through Local :/",
+                (BgLoc.x + BgLoc.width / 2) - MeasureText("Add Music Through Local :/", 50) / 2,
+                (BgLoc.y + BgLoc.height / 2) - MeasureTextHeight("Add Music Through Local :/", 50) / 2,
+                50,
+                BLACK);
+        }
     }
+
     if (showContinue)
     {
         if (hoverButton(ButContinue))
