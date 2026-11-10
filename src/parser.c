@@ -259,7 +259,7 @@ int ReadOKEData(char *dir, Deck *cards, Settings *sets)
                             }
                         }
                         else if (strcmp(key, "auto_save") == 0)
-                            sets->auto_save = (int)strtol(value, NULL, 10);
+                            sets->auto_save = (strtol(value, NULL, 10) >= 1) ? 1 : 0;
                     }
                 }
                 free(Line);
