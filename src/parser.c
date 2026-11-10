@@ -78,7 +78,7 @@ int ValidateOke(char *dir)
     char *Signature = ReadFileStream(f, 1);
     if (strcmp(Signature, FILE_SIGNATURE) != 0)
     {
-        printf("Invalid file type\n");
+        fprintf(stderr, "Invalid file type\n");
         free(Signature);
         fclose(f);
         return 1;
@@ -203,7 +203,7 @@ int ReadOKEData(char *dir, Deck *cards, Settings *sets)
     char *Signature = ReadFileStream(f, 1);
     if (strcmp(Signature, FILE_SIGNATURE) != 0)
     {
-        printf("Invalid file type\n");
+        fprintf(stderr, "Invalid file type\n");
         free(Signature);
         return 1;
     }
@@ -259,7 +259,7 @@ int ReadOKEData(char *dir, Deck *cards, Settings *sets)
                             }
                         }
                         else if (strcmp(key, "auto_save") == 0)
-                            sets->auto_save = (int)strtol(value, NULL, 10);
+                            sets->auto_save = (strtol(value, NULL, 10) >= 1) ? 1 : 0;
                     }
                 }
                 free(Line);
