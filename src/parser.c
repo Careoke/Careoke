@@ -203,7 +203,7 @@ int ReadOKEData(char *dir, Deck *cards, Settings *sets)
     char *Signature = ReadFileStream(f, 1);
     if (strcmp(Signature, FILE_SIGNATURE) != 0)
     {
-        fprintf(stderr, "Invalid file type\n");
+        printf("Invalid file type\n");
         free(Signature);
         return 1;
     }
