@@ -14,6 +14,26 @@
 #include "global.h"
 
 /**
+ *
+ */
+enum CardAction
+{
+    ACTION_NONE,
+    ACTION_EDIT,
+    ACTION_DELETE,
+    ACTION_PLAY
+};
+
+/**
+ *
+ */
+typedef struct Nex
+{
+    enum CardAction Act;
+    int cY;
+} Nex;
+
+/**
  * @brief a enum that holds the current state of the game
  *
  * @var PLAYING when the game is playing
@@ -97,5 +117,10 @@ enum OPT DrawCre();
  * @returns Returns a integer value (2 = game should start, 1 = game should exit, 0 = do nothing)
  */
 int DrawPlayMenu();
+
+/**
+ *
+ */
+Nex DrawLibCard(int maxCardX, int maxCardY, float maxCardW, int Y, MusicTrack card, int index);
 
 #endif // !MENU_H

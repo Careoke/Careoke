@@ -27,7 +27,7 @@ Card Colorhunt = {0};
 Card j1gggs = {0};
 
 Color ColCont = {18, 84, 79, 255};
-Color Rhcolor = {130, 112, 71, 255};
+Color Rhcolor = {206, 206, 189, 255};
 Color Rlcolor = {106, 121, 93, 255};
 
 Image tmp_tRay = {0};
@@ -121,6 +121,35 @@ void UnloadTimages()
     UnloadTexture(tRay);
     UnloadTexture(tLibtinyfiledialogs);
     UnloadTexture(tJ1gggs);
+}
+
+Nex DrawLibCard(int maxCardX, int maxCardY, float maxCardW, int Y, MusicTrack card, int index)
+{
+    int margin = 50;
+    int CradWidth = maxCardW - margin * 2;
+    int CardHeight = MeasureTextHeight(TextFormat("%s\n%ds | Last Score: %d%%", card.name, card.length, card.score), 40) + 40 * 2;
+    int cardX = maxCardX + margin;
+    int cardY = maxCardY + Y + margin;
+    Rectangle bufRec = {
+        .x = cardX,
+        .y = cardY,
+        .width = CradWidth,
+        .height = CardHeight};
+    DrawRectangleRec(bufRec, (Color){221, 211, 154, 255});
+
+    int playWidth = 50;
+    int playHeight = 60;
+    Vector2 v1 = {cardX + 30, cardY + CardHeight / 2 - playHeight / 2};
+    Vector2 v2 = {cardX + 30, cardY + CardHeight / 2 + playHeight / 2};
+    Vector2 v3 = {cardX + 30 + playWidth, cardY + CardHeight / 2};
+    DrawTriangle(v1, v2, v3, BLACK);
+    DrawTriangle(v1, v2, v3, BLACK);
+
+    DrawText(GetFileNameWithoutExt(card.name), cardX + 90, cardY + 25, 50, BLACK);
+
+    DrawText(TextFormat("%02d:%02d | Last Score: %d%%", (int)card.length / 60, (int)card.length % 60, card.score), cardX + 90, cardY + 100, 30, BLACK);
+
+    return (Nex){ACTION_NONE, Y + CardHeight + margin};
 }
 
 enum OPT DrawPlay()
@@ -446,6 +475,12 @@ enum OPT DrawPlay()
                 (BgLoc.y + BgLoc.height / 2) - MeasureTextHeight("Add Music Through Local :/", 50) / 2,
                 50,
                 BLACK);
+        }
+        else
+        {
+            Nex Nval = {0};
+            for (int i = 0; i < cards.count; i++)
+                Nval = DrawLibCard(BgLoc.x, BgLoc.y, BgLoc.width, Nval.cY, cards.card[i], i);
         }
     }
 
