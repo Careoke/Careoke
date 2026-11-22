@@ -149,7 +149,11 @@ Nex DrawLibCard(int maxCardX, int maxCardY, float maxCardW, int Y, MusicTrack ca
 
     DrawText(TextFormat("%02d:%02d | Last Score: %d%%", (int)card.length / 60, (int)card.length % 60, card.score), cardX + 90, cardY + 100, 30, BLACK);
 
-    return (Nex){ACTION_NONE, Y + CardHeight + margin};
+    if (enter && hoverButton(bufRec) && isMouseClicked())
+        return (Nex){ACTION_PLAY, Y + CardHeight + margin};
+
+    else
+        return (Nex){ACTION_NONE, Y + CardHeight + margin};
 }
 
 enum OPT DrawPlay()
@@ -480,7 +484,28 @@ enum OPT DrawPlay()
         {
             Nex Nval = {0};
             for (int i = 0; i < cards.count; i++)
+            {
                 Nval = DrawLibCard(BgLoc.x, BgLoc.y, BgLoc.width, Nval.cY, cards.card[i], i);
+                if (Nval.Act == ACTION_PLAY)
+                {
+                    if (filePaths[0] != NULL)
+                        free(filePaths[0]);
+
+                    if (filePaths[1] != NULL)
+                        free(filePaths[1]);
+
+                    int pathLen = strlen(cards.card[i].musicPath) + 1;
+                    filePaths[0] = calloc(pathLen, sizeof(char));
+                    strcpy(filePaths[0], cards.card[i].musicPath);
+
+                    pathLen = strlen(cards.card[i].lrcPath) + 1;
+                    filePaths[1] = calloc(pathLen, sizeof(char));
+                    strcpy(filePaths[1], cards.card[i].lrcPath);
+
+                    filePathCounter = MAX_FILEPATH_RECORDED;
+                    mode = PLAYING;
+                }
+            }
         }
     }
 
