@@ -180,10 +180,10 @@ enum OPT DrawPlay()
     DropB1.x = 0 + 60;
     DropB1.y = ((GetScreenHeight() / 2) - (GetScreenHeight() - GetScreenHeight() * 0.7f)) + 100;
     DropB1.width = (GetScreenWidth() - 180) / 2;
-    if (!showContinue)
-        DropB1.height = (GetScreenHeight() - DropB1.y) - 50;
-    else
+    if (showContinue && scrin == LOCAL)
         DropB1.height = (GetScreenHeight() - DropB1.y) - 250;
+    else
+        DropB1.height = (GetScreenHeight() - DropB1.y) - 50;
     Discard1.width = 70;
     Discard1.height = 70;
     Discard1.x = DropB1.x + DropB1.width - Discard1.width - 7;
@@ -191,10 +191,10 @@ enum OPT DrawPlay()
     DropB2.x = 60 + DropB1.width + 60;
     DropB2.y = DropB1.y;
     DropB2.width = (GetScreenWidth() - 180) / 2;
-    if (!showContinue)
-        DropB2.height = (GetScreenHeight() - DropB1.y) - 50;
-    else
+    if (showContinue && scrin == LOCAL)
         DropB2.height = (GetScreenHeight() - DropB1.y) - 250;
+    else
+        DropB2.height = (GetScreenHeight() - DropB1.y) - 50;
     Discard2.width = 70;
     Discard2.height = 70;
     Discard2.x = DropB2.x + DropB2.width - Discard2.width - 7;
@@ -509,7 +509,7 @@ enum OPT DrawPlay()
         }
     }
 
-    if (showContinue)
+    if (showContinue && scrin == LOCAL)
     {
         if (hoverButton(ButContinue))
         {
