@@ -6,8 +6,10 @@
 
 #ifdef RELEASE
 #include "../headers/raylib.h"
+#include "../headers/raymath.h"
 #else
 #include <raylib.h>
+#include <raymath.h>
 #endif // RELEASE
 #include <stdlib.h>
 #include <string.h>

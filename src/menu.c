@@ -130,24 +130,69 @@ Nex DrawLibCard(int maxCardX, int maxCardY, float maxCardW, int Y, MusicTrack ca
     int CardHeight = MeasureTextHeight(TextFormat("%s\n%ds | Last Score: %d%%", card.name, card.length, card.score), 40) + 40 * 2;
     int cardX = maxCardX + margin;
     int cardY = maxCardY + Y + margin;
+    int playWidth = 50;
+    int playHeight = 60;
+    static int hoveredIndex = -1;
+    static float playAnim = 0.0f;
+    static float thcikAnim = 0.0f;
+    float maxAnim = playWidth * 2.0f;
+
     Rectangle bufRec = {
         .x = cardX,
         .y = cardY,
         .width = CradWidth,
         .height = CardHeight};
+
     DrawRectangleRec(bufRec, (Color){221, 211, 154, 255});
+    DrawText(GetFileNameWithoutExt(card.name), cardX + maxAnim + margin, cardY + 25, 50, BLACK);
+    DrawText(TextFormat("%02d:%02d | Last Score: %d%%", (int)card.length / 60, (int)card.length % 60, card.score), cardX + maxAnim + margin, cardY + 100, 30, BLACK);
 
-    int playWidth = 50;
-    int playHeight = 60;
-    Vector2 v1 = {cardX + 30, cardY + CardHeight / 2 - playHeight / 2};
-    Vector2 v2 = {cardX + 30, cardY + CardHeight / 2 + playHeight / 2};
-    Vector2 v3 = {cardX + 30 + playWidth, cardY + CardHeight / 2};
-    DrawTriangle(v1, v2, v3, BLACK);
-    DrawTriangle(v1, v2, v3, BLACK);
+    if (hoverButton(bufRec))
+    {
+        if (hoveredIndex != index)
+        {
+            hoveredIndex = index;
+            playAnim = 0.0f;
+            thcikAnim = 0.0f;
+        }
+        playAnim += 300.0f * GetFrameTime();
+        thcikAnim += 20.0f * GetFrameTime();
+    }
+    else if (hoveredIndex == index)
+    {
+        playAnim -= 300.0f * GetFrameTime();
+        thcikAnim -= 20.0f * GetFrameTime();
+    }
 
-    DrawText(GetFileNameWithoutExt(card.name), cardX + 90, cardY + 25, 50, BLACK);
+    if (hoveredIndex == index)
+    {
+        if (playAnim > maxAnim)
+            playAnim = maxAnim;
+        if (playAnim < 0.0f)
+            playAnim = 0.0f;
+        if (thcikAnim > 10)
+            thcikAnim = 10;
+        if (thcikAnim < 0.0f)
+            thcikAnim = 0.0f;
 
-    DrawText(TextFormat("%02d:%02d | Last Score: %d%%", (int)card.length / 60, (int)card.length % 60, card.score), cardX + 90, cardY + 100, 30, BLACK);
+        float p = playAnim / maxAnim;
+        float rotation = p * 90.0f;
+        Rectangle HovPlay = {
+            .x = cardX,
+            .y = cardY,
+            .width = playAnim,
+            .height = CardHeight};
+        DrawRectangleRec(HovPlay, (Color){166, 102, 25, 255});
+        DrawRectangleLinesEx(bufRec, thcikAnim, (Color){83, 52, 22, 255});
+        float maxRadius = Vector2Length((Vector2){playWidth / 2.0f, playHeight / 2.0f});
+        float radius = playWidth / 2.0f + (maxRadius - playWidth / 2.0f) * p;
+        DrawPoly((Vector2){cardX + 30 + playWidth / 2.0f, cardY + CardHeight / 2.0f}, 3, radius, rotation, BLACK);
+
+        if (playAnim <= 0.0f && !hoverButton(bufRec))
+            hoveredIndex = -1;
+    }
+    else
+        DrawPoly((Vector2){cardX + 30 + playWidth / 2.0f, cardY + CardHeight / 2.0f}, 3, playWidth / 2.0f, 0.0f, BLACK);
 
     if (enter && hoverButton(bufRec) && isMouseClicked())
         return (Nex){ACTION_PLAY, Y + CardHeight + margin};
