@@ -133,9 +133,12 @@ Nex DrawLibCard(int maxCardX, int maxCardY, float maxCardW, int Y, MusicTrack ca
     int playWidth = 50;
     int playHeight = 60;
     static int hoveredIndex = -1;
+    static int hoveredIndex2 = -1;
     static float playAnim = 0.0f;
     static float thcikAnim = 0.0f;
+    static float alphaAnim = 0.0f;
     float maxAnim = playWidth * 2.0f;
+    bool ShoweditMenu = false;
 
     Rectangle bufRec = {
         .x = cardX,
@@ -146,6 +149,51 @@ Nex DrawLibCard(int maxCardX, int maxCardY, float maxCardW, int Y, MusicTrack ca
     DrawRectangleRec(bufRec, (Color){221, 211, 154, 255});
     DrawText(GetFileNameWithoutExt(card.name), cardX + maxAnim + margin, cardY + 25, 50, BLACK);
     DrawText(TextFormat("%02d:%02d | Last Score: %d%%", (int)card.length / 60, (int)card.length % 60, card.score), cardX + maxAnim + margin, cardY + 100, 30, BLACK);
+
+    float dotX = bufRec.x + bufRec.width - 30;
+    float dotY = bufRec.y + bufRec.height / 2;
+    DrawCircle(
+        dotX,
+        dotY,
+        5,
+        BLACK);
+    DrawCircle(
+        dotX,
+        dotY + 15,
+        5,
+        BLACK);
+    DrawCircle(
+        dotX,
+        dotY - 15,
+        5,
+        BLACK);
+    Rectangle eBoundbox = {
+        .x = dotX - 15,
+        .y = bufRec.y,
+        .width = bufRec.x + bufRec.width - (dotX - 15),
+        .height = bufRec.height};
+
+    if (hoverButton(eBoundbox))
+    {
+        if (hoveredIndex2 != index)
+        {
+            hoveredIndex2 = index;
+            alphaAnim = 0.0f;
+        }
+        alphaAnim += 300.0f * GetFrameTime();
+    }
+    else if (hoveredIndex2 == index)
+    {
+        alphaAnim -= 300.0f * GetFrameTime();
+    }
+    if (hoveredIndex2 == index)
+    {
+        if (alphaAnim > 100.0f)
+            alphaAnim = 100.0f;
+        if (alphaAnim < 0.0f)
+            alphaAnim = 0.0f;
+        DrawRectangleRec(eBoundbox, (Color){0, 0, 0, (unsigned char)alphaAnim});
+    }
 
     if (hoverButton(bufRec))
     {
@@ -194,7 +242,7 @@ Nex DrawLibCard(int maxCardX, int maxCardY, float maxCardW, int Y, MusicTrack ca
     else
         DrawPoly((Vector2){cardX + 30 + playWidth / 2.0f, cardY + CardHeight / 2.0f}, 3, playWidth / 2.0f, 0.0f, BLACK);
 
-    if (enter && hoverButton(bufRec) && isMouseClicked())
+    if (enter && !hoverButton(eBoundbox) && hoverButton(bufRec) && isMouseClicked())
         return (Nex){ACTION_PLAY, Y + CardHeight + margin};
 
     else

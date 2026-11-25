@@ -21,8 +21,7 @@
 enum CardAction
 {
     ACTION_NONE,
-    ACTION_EDIT,
-    ACTION_DELETE,
+    ACTION_CALIBRATE,
     ACTION_PLAY
 };
 
