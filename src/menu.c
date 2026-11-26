@@ -57,6 +57,7 @@ bool DropBoxHovered = 0;
 bool showContinue = 0;
 bool ShowSave = false;
 bool ticked = false;
+bool ShoweditMenu = false;
 
 bool isMp3 = 0;
 bool isLrc = 0;
@@ -138,7 +139,6 @@ Nex DrawLibCard(int maxCardX, int maxCardY, float maxCardW, int Y, MusicTrack ca
     static float thcikAnim = 0.0f;
     static float alphaAnim = 0.0f;
     float maxAnim = playWidth * 2.0f;
-    bool ShoweditMenu = false;
 
     Rectangle bufRec = {
         .x = cardX,
@@ -175,12 +175,17 @@ Nex DrawLibCard(int maxCardX, int maxCardY, float maxCardW, int Y, MusicTrack ca
 
     if (hoverButton(eBoundbox))
     {
-        if (hoveredIndex2 != index)
+        if (!ShoweditMenu)
         {
-            hoveredIndex2 = index;
-            alphaAnim = 0.0f;
+            if (hoveredIndex2 != index)
+            {
+                hoveredIndex2 = index;
+                alphaAnim = 0.0f;
+            }
+            alphaAnim += 300.0f * GetFrameTime();
         }
-        alphaAnim += 300.0f * GetFrameTime();
+        if (isMouseClicked())
+            ShoweditMenu = !ShoweditMenu;
     }
     else if (hoveredIndex2 == index)
     {
@@ -195,7 +200,14 @@ Nex DrawLibCard(int maxCardX, int maxCardY, float maxCardW, int Y, MusicTrack ca
         DrawRectangleRec(eBoundbox, (Color){0, 0, 0, (unsigned char)alphaAnim});
     }
 
-    if (hoverButton(bufRec))
+    if (ShoweditMenu)
+    {
+        if (IsKeyPressed(KEY_ESCAPE))
+            ShoweditMenu = false;
+        DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){255, 255, 255, 255 / 7});
+    }
+
+    if (hoverButton(bufRec) && !ShoweditMenu)
     {
         if (hoveredIndex != index)
         {
@@ -242,7 +254,7 @@ Nex DrawLibCard(int maxCardX, int maxCardY, float maxCardW, int Y, MusicTrack ca
     else
         DrawPoly((Vector2){cardX + 30 + playWidth / 2.0f, cardY + CardHeight / 2.0f}, 3, playWidth / 2.0f, 0.0f, BLACK);
 
-    if (enter && !hoverButton(eBoundbox) && hoverButton(bufRec) && isMouseClicked())
+    if (!ShoweditMenu && enter && !hoverButton(eBoundbox) && hoverButton(bufRec) && isMouseClicked())
         return (Nex){ACTION_PLAY, Y + CardHeight + margin};
 
     else
@@ -251,7 +263,7 @@ Nex DrawLibCard(int maxCardX, int maxCardY, float maxCardW, int Y, MusicTrack ca
 
 enum OPT DrawPlay()
 {
-    if (IsKeyPressed(KEY_ESCAPE))
+    if (!ShoweditMenu && IsKeyPressed(KEY_ESCAPE))
     {
         enter = false;
         return NONE;
