@@ -1,7 +1,7 @@
 #ifndef MENU_H
 #define MENU_H
 
-#define VERSION "0.1.0"
+#define VERSION "0.1.5"
 #define TYPE "BETA"
 
 #ifdef RELEASE
