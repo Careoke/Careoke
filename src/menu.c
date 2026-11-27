@@ -205,6 +205,39 @@ Nex DrawLibCard(int maxCardX, int maxCardY, float maxCardW, int Y, MusicTrack ca
         if (IsKeyPressed(KEY_ESCAPE))
             ShoweditMenu = false;
         DrawRectangle(0, 0, GetScreenWidth(), GetScreenHeight(), (Color){255, 255, 255, 255 / 7});
+
+        Rectangle Edoptions[3];
+        Edoptions[0].width = Edoptions[1].width = Edoptions[2].width = GetScreenWidth() * 0.65f;
+        Edoptions[0].height = Edoptions[1].height = Edoptions[2].height = 100;
+        Edoptions[0].x = Edoptions[1].x = Edoptions[2].x = GetScreenWidth() / 2 - Edoptions[0].width / 2;
+        Edoptions[0].y = 100;
+        Edoptions[1].y = Edoptions[0].y + Edoptions[0].height + 50;
+        Edoptions[2].y = Edoptions[1].y + Edoptions[1].height + +50;
+
+        DrawRectangleRec(Edoptions[0], GREEN);
+        DrawRectangleRec(Edoptions[1], BLUE);
+        DrawRectangleRec(Edoptions[2], RED);
+
+        DrawText(
+            "PLAY",
+            Edoptions[0].x + Edoptions[0].width / 2 - MeasureText("PLAY", 50) / 2,
+            Edoptions[0].y + Edoptions[0].height / 2 - MeasureTextHeight("PLAY", 50) / 2,
+            50,
+            BLACK);
+
+        DrawText(
+            "EDIT",
+            Edoptions[1].x + Edoptions[1].width / 2 - MeasureText("EDIT", 50) / 2,
+            Edoptions[1].y + Edoptions[1].height / 2 - MeasureTextHeight("EDIT", 50) / 2,
+            50,
+            BLACK);
+
+        DrawText(
+            "DELETE",
+            Edoptions[2].x + Edoptions[2].width / 2 - MeasureText("DELETE", 50) / 2,
+            Edoptions[2].y + Edoptions[2].height / 2 - MeasureTextHeight("DELETE", 50) / 2,
+            50,
+            BLACK);
     }
 
     if (hoverButton(bufRec) && !ShoweditMenu)
